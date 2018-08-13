@@ -1,0 +1,22 @@
+fos_rest:
+    param_fetcher_listener: true
+    body_listener: true
+    format_listener:
+        rules:
+            - { path: ^/, priorities: [ json ], fallback_format: ~, prefer_extension: true }
+
+    body_converter:
+        enabled: true
+        validate: true
+
+    view:
+        view_response_listener: 'force'
+        formats:
+            xml:  false
+            json: true
+        templating_formats:
+            html: true
+
+    allowed_methods_listener: true
+    access_denied_listener:
+        json: true
