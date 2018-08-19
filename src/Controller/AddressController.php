@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Serializer\SerializerInterface;
 
 
 class AddressController extends FOSRestController
@@ -54,11 +55,13 @@ class AddressController extends FOSRestController
      *     name = "new_address"
      * )
      *
-     * @param Address $address
+     * @param SerializerInterface $serializer
      * @return View
      */
-    public function newAddressAction(Address $address) : View
+    public function newAddressAction(SerializerInterface $serializer) : View
     {
-        return $this->view($address , Response::HTTP_OK);
+        $ad = $serializer->deserialize('{"idAddress": 100}', Address::class, 'json');
+        var_dump($ad);exit;
+        return $this->view([] , Response::HTTP_OK);
     }
 }
