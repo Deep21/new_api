@@ -5,19 +5,17 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * InvCartProduct
+ * CartProduct
  *
- * @ORM\Table(name="inv_cart_product", indexes={@ORM\Index(name="id_product_attribute", columns={"id_product_attribute"}), @ORM\Index(name="id_cart_order", columns={"id_cart", "date_add", "id_product", "id_product_attribute"})})
+ * @ORM\Table(name="pos_cart_product", indexes={@ORM\Index(name="id_product_attribute", columns={"id_product_attribute"}), @ORM\Index(name="id_cart_order", columns={"id_cart", "date_add", "id_product", "id_product_attribute"})})
  * @ORM\Entity
  */
-class InvCartProduct
+class CartProduct
 {
     /**
      * @var int
      *
      * @ORM\Column(name="id_cart", type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $idCart;
 
@@ -25,8 +23,6 @@ class InvCartProduct
      * @var int
      *
      * @ORM\Column(name="id_product", type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $idProduct;
 
@@ -34,8 +30,6 @@ class InvCartProduct
      * @var int
      *
      * @ORM\Column(name="id_address_delivery", type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $idAddressDelivery = '0';
 
@@ -43,8 +37,6 @@ class InvCartProduct
      * @var int
      *
      * @ORM\Column(name="id_product_attribute", type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $idProductAttribute = '0';
 
@@ -52,8 +44,6 @@ class InvCartProduct
      * @var int
      *
      * @ORM\Column(name="id_customization", type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $idCustomization = '0';
 
@@ -83,9 +73,23 @@ class InvCartProduct
         return $this->idCart;
     }
 
+    public function setIdCart(int $idCart): self
+    {
+        $this->idCart = $idCart;
+
+        return $this;
+    }
+
     public function getIdProduct(): ?int
     {
         return $this->idProduct;
+    }
+
+    public function setIdProduct(int $idProduct): self
+    {
+        $this->idProduct = $idProduct;
+
+        return $this;
     }
 
     public function getIdAddressDelivery(): ?int
@@ -93,14 +97,35 @@ class InvCartProduct
         return $this->idAddressDelivery;
     }
 
+    public function setIdAddressDelivery(int $idAddressDelivery): self
+    {
+        $this->idAddressDelivery = $idAddressDelivery;
+
+        return $this;
+    }
+
     public function getIdProductAttribute(): ?int
     {
         return $this->idProductAttribute;
     }
 
+    public function setIdProductAttribute(int $idProductAttribute): self
+    {
+        $this->idProductAttribute = $idProductAttribute;
+
+        return $this;
+    }
+
     public function getIdCustomization(): ?int
     {
         return $this->idCustomization;
+    }
+
+    public function setIdCustomization(int $idCustomization): self
+    {
+        $this->idCustomization = $idCustomization;
+
+        return $this;
     }
 
     public function getIdShop(): ?int
