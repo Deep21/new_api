@@ -7,6 +7,7 @@ use App\Service\MyService;
 use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\Annotations;
@@ -56,12 +57,13 @@ class AddressController extends FOSRestController
      * )
      *
      * @param SerializerInterface $serializer
+     * @param Request $request
      * @return View
      */
-    public function newAddressAction(SerializerInterface $serializer) : View
+    public function newAddressAction(SerializerInterface $serializer, Request $request) : View
     {
-        $ad = $serializer->deserialize('{"idAddress": 100}', Address::class, 'json');
-        var_dump($ad);exit;
-        return $this->view([] , Response::HTTP_OK);
+        $json = $request->getContent();
+        $ad = $serializer->deserialize($json, Address::class, 'json');
+        return $this->view($ad , Response::HTTP_OK);
     }
 }
