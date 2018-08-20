@@ -11,7 +11,7 @@ namespace App\Service;
 
 use App\Repository\AddressRepository;
 
-class MyService
+class OrderManager
 {
     /**
      * @var AddressRepository
@@ -19,7 +19,7 @@ class MyService
     private $addressRepository;
 
     /**
-     * MyService constructor.
+     * CustomerManager constructor.
      * @param AddressRepository $addressRepository
      */
     public function __construct(AddressRepository $addressRepository)

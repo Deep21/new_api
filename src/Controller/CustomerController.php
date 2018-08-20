@@ -3,13 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Customer;
+use App\Service\CustomerManager;
+use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
-class CustomerController extends AbstractController
+class CustomerController extends FOSRestController
 {
     /**
      * @Annotations\Get(
@@ -23,7 +25,7 @@ class CustomerController extends AbstractController
      */
     public function getCustomerAction(Customer $customer) : View
     {
-
+        return $this->view($customer);
     }
 
     /**
@@ -36,7 +38,13 @@ class CustomerController extends AbstractController
      */
     public function getCustomerCollectionAction() : View
     {
+        $customers = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository(Customer::class)
+            ->findAll();
 
+        $this->view($customers, Response::HTTP_OK);
     }
 
     /**
@@ -45,11 +53,13 @@ class CustomerController extends AbstractController
      *     name = "get_customer_address"
      * )
      *
+     * @param CustomerManager $customerManager
      * @return View
      */
-    public function getCustomerAddressAction() : View
+    public function getCustomerAddressAction(CustomerManager $customerManager) : View
     {
-
+        $customerManager->getAddress();
+        $this->view([], Response::HTTP_OK);
     }
 
     /**

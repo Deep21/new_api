@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Address;
-use App\Service\MyService;
+use App\Service\CustomerManager;
 use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -67,9 +67,9 @@ class AddressController extends FOSRestController
         $json = $request->getContent();
         $address   = $serializer->deserialize($json, Address::class, 'json');
         $em = $this->getDoctrine()->getManager();
+
         $em->persist($address);
         $em->flush();
-
 
         return $this->view([], Response::HTTP_CREATED);
     }
@@ -86,7 +86,6 @@ class AddressController extends FOSRestController
      */
     public function removeAddressAction(Address $address) : View
     {
-
         $em = $this->getDoctrine()->getManager();
         $em->remove($address);
         $em->flush();
