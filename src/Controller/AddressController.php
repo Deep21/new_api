@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validation;
 
 
 class AddressController extends FOSRestController
@@ -58,12 +59,58 @@ class AddressController extends FOSRestController
      *
      * @param SerializerInterface $serializer
      * @param Request $request
-     * @return View
+     *
+     * @return View(statusCode=Response::HTTP_CREATED)
      */
     public function newAddressAction(SerializerInterface $serializer, Request $request) : View
     {
         $json = $request->getContent();
-        $ad = $serializer->deserialize($json, Address::class, 'json');
-        return $this->view($ad , Response::HTTP_OK);
+        $address   = $serializer->deserialize($json, Address::class, 'json');
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($address);
+        $em->flush();
+
+
+        return $this->view([], Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Annotations\Delete(
+     *     path="/address/{address}",
+     *     name = "remove_address"
+     * )
+     *
+     * @ParamConverter("address", class="App\Entity\Address")
+     * @param Address $address
+     * @return View(statusCode=Response::HTTP_NO_CONTENT)
+     */
+    public function removeAddressAction(Address $address) : View
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($address);
+        $em->flush();
+
+        return $this->view([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Annotations\Put(
+     *     path="/address/{address}",
+     *     name = "edit_address"
+     * )
+     *
+     * @ParamConverter("address", class="App\Entity\Address")
+     * @param Address $address
+     * @return View(statusCode=Response::HTTP_NO_CONTENT)
+     */
+    public function editAddressAction(Address $address) : View
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($address);
+        $em->flush();
+
+        return $this->view([], Response::HTTP_NO_CONTENT);
     }
 }

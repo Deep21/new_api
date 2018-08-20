@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="pos_address", indexes={@ORM\Index(name="address_customer", columns={"id_customer"}), @ORM\Index(name="id_country", columns={"id_country"}), @ORM\Index(name="id_state", columns={"id_state"}), @ORM\Index(name="id_manufacturer", columns={"id_manufacturer"}), @ORM\Index(name="id_supplier", columns={"id_supplier"}), @ORM\Index(name="id_warehouse", columns={"id_warehouse"})})
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class Address
 {
@@ -40,28 +41,28 @@ class Address
      *
      * @ORM\Column(name="id_customer", type="integer", nullable=false, options={"unsigned"=true})
      */
-    private $idCustomer = '0';
+    private $idCustomer = 0;
 
     /**
      * @var int
      *
      * @ORM\Column(name="id_manufacturer", type="integer", nullable=false, options={"unsigned"=true})
      */
-    private $idManufacturer = '0';
+    private $idManufacturer = 0;
 
     /**
      * @var int
      *
      * @ORM\Column(name="id_supplier", type="integer", nullable=false, options={"unsigned"=true})
      */
-    private $idSupplier = '0';
+    private $idSupplier = 0;
 
     /**
      * @var int
      *
      * @ORM\Column(name="id_warehouse", type="integer", nullable=false, options={"unsigned"=true})
      */
-    private $idWarehouse = '0';
+    private $idWarehouse = 0;
 
     /**
      * @var string
@@ -468,6 +469,22 @@ class Address
         $this->deleted = $deleted;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedAtValue()
+    {
+        $this->dateAdd = new \DateTime();
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setUpdatedAtValue()
+    {
+        $this->dateUpd = new \DateTime();
     }
 
 

@@ -5,12 +5,12 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * PosOrders
+ * Orders
  *
  * @ORM\Table(name="pos_orders", indexes={@ORM\Index(name="reference", columns={"reference"}), @ORM\Index(name="id_customer", columns={"id_customer"}), @ORM\Index(name="id_cart", columns={"id_cart"}), @ORM\Index(name="invoice_number", columns={"invoice_number"}), @ORM\Index(name="id_carrier", columns={"id_carrier"}), @ORM\Index(name="id_lang", columns={"id_lang"}), @ORM\Index(name="id_currency", columns={"id_currency"}), @ORM\Index(name="id_address_delivery", columns={"id_address_delivery"}), @ORM\Index(name="id_address_invoice", columns={"id_address_invoice"}), @ORM\Index(name="id_shop_group", columns={"id_shop_group"}), @ORM\Index(name="current_state", columns={"current_state"}), @ORM\Index(name="id_shop", columns={"id_shop"}), @ORM\Index(name="date_add", columns={"date_add"})})
  * @ORM\Entity
  */
-class PosOrders
+class Orders
 {
     /**
      * @var int
