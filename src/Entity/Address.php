@@ -7,62 +7,29 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Address
  *
- * @ORM\Table(name="pos_address", indexes={@ORM\Index(name="address_customer", columns={"id_customer"}), @ORM\Index(name="id_country", columns={"id_country"}), @ORM\Index(name="id_state", columns={"id_state"}), @ORM\Index(name="id_manufacturer", columns={"id_manufacturer"}), @ORM\Index(name="id_supplier", columns={"id_supplier"}), @ORM\Index(name="id_warehouse", columns={"id_warehouse"})})
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\Table(name="address")
+ * @ORM\Entity(repositoryClass="App\Repository\AddressRepository")
  */
 class Address
 {
     /**
      * @var int
      *
-     * @ORM\Column(name="id_address", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $idAddress;
+    private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id_country", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\ManyToOne(targetEntity=Customer::class, inversedBy="address")
      */
-    private $idCountry;
+    private $customer;
 
     /**
-     * @var int|null
-     *
-     * @ORM\Column(name="id_state", type="integer", nullable=true, options={"unsigned"=true})
+     * @ORM\ManyToOne(targetEntity=Manufacturer::class, inversedBy="address")
      */
-    private $idState;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id_customer", type="integer", nullable=false, options={"unsigned"=true})
-     */
-    private $idCustomer = 0;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id_manufacturer", type="integer", nullable=false, options={"unsigned"=true})
-     */
-    private $idManufacturer = 0;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id_supplier", type="integer", nullable=false, options={"unsigned"=true})
-     */
-    private $idSupplier = 0;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id_warehouse", type="integer", nullable=false, options={"unsigned"=true})
-     */
-    private $idWarehouse = 0;
+    private $manufacturer;
 
     /**
      * @var string
@@ -100,178 +67,72 @@ class Address
     private $address1;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="address2", type="string", length=128, nullable=true)
      */
     private $address2;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="postcode", type="string", length=12, nullable=true)
+     * @ORM\Column(name="postcode", type="string", length=12)
      */
     private $postcode;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="city", type="string", length=64, nullable=false)
+     * @ORM\Column(name="city", type="string", length=64)
      */
     private $city;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="other", type="text", length=65535, nullable=true)
+     * @ORM\Column(name="other", type="string", length=255, nullable=true)
      */
     private $other;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="phone", type="string", length=32, nullable=true)
+     * @ORM\Column(name="phone", type="string", length=32)
      */
     private $phone;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="phone_mobile", type="string", length=32, nullable=true)
+     * @ORM\Column(name="phone_mobile", type="string", length=32)
      */
-    private $phoneMobile;
+    private $phone_mobile;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="vat_number", type="string", length=32, nullable=true)
      */
-    private $vatNumber;
+    private $vat_number;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="dni", type="string", length=16, nullable=true)
      */
     private $dni;
 
     /**
-     * @var \DateTime
-     *
+     * @ORM\Column(name="deleted", type="boolean", nullable=true)
+     */
+    private $deleted;
+
+    /**
      * @ORM\Column(name="date_add", type="datetime", nullable=false)
      */
-    private $dateAdd;
+    private $date_add;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="date_upd", type="datetime", nullable=false)
      */
-    private $dateUpd;
+    private $date_upd;
 
     /**
-     * @var bool
-     *
-     * @ORM\Column(name="active", type="boolean", nullable=false, options={"default"="1"})
+     * @return null|string
      */
-    private $active = '1';
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="deleted", type="boolean", nullable=false)
-     */
-    private $deleted = '0';
-
-    public function getIdAddress(): ?int
-    {
-        return $this->idAddress;
-    }
-
-    public function setIdAddress(int $idAddress): self
-    {
-        $this->idAddress = $idAddress;
-
-        return $this;
-    }
-
-    public function getIdCountry(): ?int
-    {
-        return $this->idCountry;
-    }
-
-    public function setIdCountry(int $idCountry): self
-    {
-        $this->idCountry = $idCountry;
-
-        return $this;
-    }
-
-    public function getIdState(): ?int
-    {
-        return $this->idState;
-    }
-
-    public function setIdState(?int $idState): self
-    {
-        $this->idState = $idState;
-
-        return $this;
-    }
-
-    public function getIdCustomer(): ?int
-    {
-        return $this->idCustomer;
-    }
-
-    public function setIdCustomer(int $idCustomer): self
-    {
-        $this->idCustomer = $idCustomer;
-
-        return $this;
-    }
-
-    public function getIdManufacturer(): ?int
-    {
-        return $this->idManufacturer;
-    }
-
-    public function setIdManufacturer(int $idManufacturer): self
-    {
-        $this->idManufacturer = $idManufacturer;
-
-        return $this;
-    }
-
-    public function getIdSupplier(): ?int
-    {
-        return $this->idSupplier;
-    }
-
-    public function setIdSupplier(int $idSupplier): self
-    {
-        $this->idSupplier = $idSupplier;
-
-        return $this;
-    }
-
-    public function getIdWarehouse(): ?int
-    {
-        return $this->idWarehouse;
-    }
-
-    public function setIdWarehouse(int $idWarehouse): self
-    {
-        $this->idWarehouse = $idWarehouse;
-
-        return $this;
-    }
-
     public function getAlias(): ?string
     {
         return $this->alias;
     }
 
+    /**
+     * @param string $alias
+     * @return Address
+     */
     public function setAlias(string $alias): self
     {
         $this->alias = $alias;
@@ -279,11 +140,18 @@ class Address
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getCompany(): ?string
     {
         return $this->company;
     }
 
+    /**
+     * @param null|string $company
+     * @return Address
+     */
     public function setCompany(?string $company): self
     {
         $this->company = $company;
@@ -291,11 +159,18 @@ class Address
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getLastname(): ?string
     {
         return $this->lastname;
     }
 
+    /**
+     * @param string $lastname
+     * @return Address
+     */
     public function setLastname(string $lastname): self
     {
         $this->lastname = $lastname;
@@ -303,11 +178,18 @@ class Address
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getFirstname(): ?string
     {
         return $this->firstname;
     }
 
+    /**
+     * @param string $firstname
+     * @return Address
+     */
     public function setFirstname(string $firstname): self
     {
         $this->firstname = $firstname;
@@ -315,11 +197,18 @@ class Address
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getAddress1(): ?string
     {
         return $this->address1;
     }
 
+    /**
+     * @param string $address1
+     * @return Address
+     */
     public function setAddress1(string $address1): self
     {
         $this->address1 = $address1;
@@ -327,11 +216,66 @@ class Address
         return $this;
     }
 
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return Customer
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * @param mixed $customer
+     */
+    public function setCustomer(Customer $customer): void
+    {
+        $this->customer = $customer;
+    }
+
+    /**
+     * @return Manufacturer
+     */
+    public function getManufacturer(): Manufacturer
+    {
+        return $this->manufacturer;
+    }
+
+    /**
+     * @param Manufacturer $manufacturer
+     */
+    public function setManufacturer(Manufacturer $manufacturer): void
+    {
+        $this->manufacturer = $manufacturer;
+    }
+
+    /**
+     * @return null|string
+     */
     public function getAddress2(): ?string
     {
         return $this->address2;
     }
 
+    /**
+     * @param null|string $address2
+     * @return Address
+     */
     public function setAddress2(?string $address2): self
     {
         $this->address2 = $address2;
@@ -339,23 +283,37 @@ class Address
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getPostcode(): ?string
     {
         return $this->postcode;
     }
 
-    public function setPostcode(?string $postcode): self
+    /**
+     * @param string $postcode
+     * @return Address
+     */
+    public function setPostcode(string $postcode): self
     {
         $this->postcode = $postcode;
 
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getCity(): ?string
     {
         return $this->city;
     }
 
+    /**
+     * @param string $city
+     * @return Address
+     */
     public function setCity(string $city): self
     {
         $this->city = $city;
@@ -363,11 +321,18 @@ class Address
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getOther(): ?string
     {
         return $this->other;
     }
 
+    /**
+     * @param null|string $other
+     * @return Address
+     */
     public function setOther(?string $other): self
     {
         $this->other = $other;
@@ -375,47 +340,75 @@ class Address
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getPhone(): ?string
     {
         return $this->phone;
     }
 
-    public function setPhone(?string $phone): self
+    /**
+     * @param string $phone
+     * @return Address
+     */
+    public function setPhone(string $phone): self
     {
         $this->phone = $phone;
 
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getPhoneMobile(): ?string
     {
-        return $this->phoneMobile;
+        return $this->phone_mobile;
     }
 
-    public function setPhoneMobile(?string $phoneMobile): self
+    /**
+     * @param string $phone_mobile
+     * @return Address
+     */
+    public function setPhoneMobile(string $phone_mobile): self
     {
-        $this->phoneMobile = $phoneMobile;
+        $this->phone_mobile = $phone_mobile;
 
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getVatNumber(): ?string
     {
-        return $this->vatNumber;
+        return $this->vat_number;
     }
 
-    public function setVatNumber(?string $vatNumber): self
+    /**
+     * @param null|string $vat_number
+     * @return Address
+     */
+    public function setVatNumber(?string $vat_number): self
     {
-        $this->vatNumber = $vatNumber;
+        $this->vat_number = $vat_number;
 
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getDni(): ?string
     {
         return $this->dni;
     }
 
+    /**
+     * @param null|string $dni
+     * @return Address
+     */
     public function setDni(?string $dni): self
     {
         $this->dni = $dni;
@@ -423,48 +416,19 @@ class Address
         return $this;
     }
 
-    public function getDateAdd(): ?\DateTimeInterface
-    {
-        return $this->dateAdd;
-    }
-
-    public function setDateAdd(\DateTimeInterface $dateAdd): self
-    {
-        $this->dateAdd = $dateAdd;
-
-        return $this;
-    }
-
-    public function getDateUpd(): ?\DateTimeInterface
-    {
-        return $this->dateUpd;
-    }
-
-    public function setDateUpd(\DateTimeInterface $dateUpd): self
-    {
-        $this->dateUpd = $dateUpd;
-
-        return $this;
-    }
-
-    public function getActive(): ?bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(bool $active): self
-    {
-        $this->active = $active;
-
-        return $this;
-    }
-
+    /**
+     * @return bool|null
+     */
     public function getDeleted(): ?bool
     {
         return $this->deleted;
     }
 
-    public function setDeleted(bool $deleted): self
+    /**
+     * @param bool|null $deleted
+     * @return Address
+     */
+    public function setDeleted(?bool $deleted): self
     {
         $this->deleted = $deleted;
 
@@ -472,20 +436,40 @@ class Address
     }
 
     /**
-     * @ORM\PrePersist
+     * @return \DateTimeInterface|null
      */
-    public function setCreatedAtValue()
+    public function getDateAdd(): ?\DateTimeInterface
     {
-        $this->dateAdd = new \DateTime();
+        return $this->date_add;
     }
 
     /**
-     * @ORM\PrePersist
+     * @param \DateTimeInterface $date_add
+     * @return Address
      */
-    public function setUpdatedAtValue()
+    public function setDateAdd(\DateTimeInterface $date_add): self
     {
-        $this->dateUpd = new \DateTime();
+        $this->date_add = $date_add;
+
+        return $this;
     }
 
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getDateUpd(): ?\DateTimeInterface
+    {
+        return $this->date_upd;
+    }
 
+    /**
+     * @param \DateTimeInterface $date_upd
+     * @return Address
+     */
+    public function setDateUpd(\DateTimeInterface $date_upd): self
+    {
+        $this->date_upd = $date_upd;
+
+        return $this;
+    }
 }
