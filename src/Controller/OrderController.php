@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\InvOrder;
-use App\Entity\Orders;
+
+use App\Entity\Order;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
@@ -19,10 +19,10 @@ class OrderController extends FOSRestController
      * )
      *
      * @ParamConverter("order", class="App\Entity\Orders")
-     * @param Orders $order
+     * @param Order $order
      * @return View
      */
-    public function getOrderAction(Orders $order) : View
+    public function getOrderAction(Order $order) : View
     {
 
     }
@@ -37,7 +37,7 @@ class OrderController extends FOSRestController
      * @param Orders $order
      * @return View
      */
-    public function editOrderAction(Orders $order) : View
+    public function editOrderAction(Order $order) : View
     {
 
     }

@@ -21,6 +21,12 @@ class Customer
     private $address;
 
     /**
+     * @var Collection|Order[] $order
+     * @ORM\OneToMany(targetEntity=Order::class, cascade={"persist", "remove"}, mappedBy="customer")
+     */
+    private $order;
+
+    /**
      * @var int
      *
      * @ORM\Id
@@ -182,6 +188,23 @@ class Customer
     {
         $this->address->add($address);
         $address->setCustomer($this);
+    }
+
+    /**
+     * @return Address[]|Collection
+     */
+    public function getOrder() : Collection
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param Order $order
+     */
+    public function addOrder(Order $order): void
+    {
+        $this->order->add($order);
+        $order->setCustomer($this);
     }
 
 }
