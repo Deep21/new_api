@@ -3,32 +3,55 @@
  * Created by PhpStorm.
  * User: deeptha
  * Date: 13/08/18
- * Time: 17:14
+ * Time: 17:14.
  */
 
 namespace App\Service;
 
+use App\Entity\Order;
+use App\Repository\OrderDetailRepository;
+use App\Repository\OrderRepository;
 
-use App\Repository\AddressRepository;
-
-class OrderManager
+/**
+ * Class OrderManager.
+ */
+class OrderManager extends AbstractOrderManager
 {
     /**
-     * @var AddressRepository
+     * @var OrderRepository
      */
-    private $addressRepository;
+    private $orderRepository;
+    /**
+     * @var OrderDetailRepository
+     */
+    private $orderDetail;
 
     /**
-     * CustomerManager constructor.
-     * @param AddressRepository $addressRepository
+     * OrderManager constructor.
+     *
+     * @param OrderRepository       $orderRepository
+     * @param OrderDetailRepository $orderDetail
      */
-    public function __construct(AddressRepository $addressRepository)
+    public function __construct(OrderRepository $orderRepository, OrderDetailRepository $orderDetail)
     {
-        $this->addressRepository = $addressRepository;
+        parent::__construct($orderRepository);
+        $this->orderRepository = $orderRepository;
+        $this->orderDetail = $orderDetail;
     }
 
-    public function getName()
+    /**
+     * @param \App\Model\Order $order
+     */
+    public function onCreateNewOrder(\App\Model\Order $order)
     {
-        return $this->addressRepository->findAll();
+        $this->orderDetail->createOrderDetail($order);
+    }
+
+    /**
+     * @param \App\Model\Order $order
+     */
+    public function onUpdateOrder(\App\Model\Order $order)
+    {
+        $this->orderRepository->updateOrder($order);
     }
 }

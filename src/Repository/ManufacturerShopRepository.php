@@ -19,9 +19,9 @@ class ManufacturerShopRepository extends ServiceEntityRepository
         parent::__construct($registry, ManufacturerShop::class);
     }
 
-//    /**
-//     * @return ManufacturerShop[] Returns an array of ManufacturerShop objects
-//     */
+    //    /**
+    //     * @return ManufacturerShop[] Returns an array of ManufacturerShop objects
+    //     */
     /*
     public function findByExampleField($value)
     {

@@ -4,14 +4,11 @@ namespace App\Repository;
 
 use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * @method Order|null find($id, $lockMode = null, $lockVersion = null)
- * @method Order|null findOneBy(array $criteria, array $orderBy = null)
- * @method Order[]    findAll()
- * @method Order[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
 class OrderRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
@@ -19,32 +16,84 @@ class OrderRepository extends ServiceEntityRepository
         parent::__construct($registry, Order::class);
     }
 
-//    /**
-//     * @return Order[] Returns an array of Order objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param int $id
+     *
+     * @return array|Order
+     */
+    public function getOrdersByClient(int $id): ? array
     {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('o.id', 'ASC')
-            ->setMaxResults(10)
+        $o = $this->createQueryBuilder('o')
+            ->select(['o'])
+            ->where('o.customer = ?1')
+            ->setParameter('1', $id)
             ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+            ->getArrayResult();
 
-    /*
-    public function findOneBySomeField($value): ?Order
-    {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $o;
     }
-    */
+
+    /**
+     * @param int $id
+     *
+     * @return Order
+     */
+    public function findOrderBy(int $id)
+    {
+        try {
+            return $this->createQueryBuilder('o')
+                ->select(['o'])
+                ->where('o.id = :id')
+                ->setParameter(':id', $id)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (NoResultException $e) {
+            throw new NotFoundHttpException('Not Found');
+        } catch (NonUniqueResultException $e) {
+        }
+
+        return null;
+    }
+
+    /**
+     * @return Order
+     *
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function createOrder()
+    {
+        $order = new Order();
+        $order->setReference('refere');
+        $order->setCurrentState(1);
+        $em = $this->getEntityManager();
+        $em->persist($order);
+        $em->flush();
+
+        return $order;
+    }
+
+    /**
+     * @param \App\Model\Order $order
+     */
+    public function updateOrder(\App\Model\Order $order)
+    {
+        $qb = $this->createQueryBuilder('o')->update();
+
+        if (null != $order->getCustomer()) {
+            $qb
+                ->set('o.customer', ':customerId')
+                ->setParameter('customerId', $order->getCustomer()->getId());
+        }
+        $qb
+            ->set('o.cart', ':cartId')
+            ->where('o.id = :orderId')
+            ->setParameters(
+                [
+                    'orderId' => $orderId,
+                    'cartId' => $cart->getId(),
+                ]
+            )
+            ->getQuery()
+            ->execute();
+    }
 }

@@ -19,9 +19,9 @@ class ManufacturerRepository extends ServiceEntityRepository
         parent::__construct($registry, Manufacturer::class);
     }
 
-//    /**
-//     * @return Manufacturer[] Returns an array of Manufacturer objects
-//     */
+    //    /**
+    //     * @return Manufacturer[] Returns an array of Manufacturer objects
+    //     */
     /*
     public function findByExampleField($value)
     {

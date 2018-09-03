@@ -5,6 +5,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * ManufacturerShop.
+ *
  * @ORM\Entity(repositoryClass="App\Repository\ManufacturerShopRepository")
  */
 class ManufacturerShop

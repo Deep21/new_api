@@ -19,9 +19,9 @@ class ShopGroupRepository extends ServiceEntityRepository
         parent::__construct($registry, ShopGroup::class);
     }
 
-//    /**
-//     * @return ShopGroup[] Returns an array of ShopGroup objects
-//     */
+    //    /**
+    //     * @return ShopGroup[] Returns an array of ShopGroup objects
+    //     */
     /*
     public function findByExampleField($value)
     {

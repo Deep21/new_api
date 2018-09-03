@@ -3,15 +3,14 @@
  * Created by PhpStorm.
  * User: deeptha
  * Date: 13/08/18
- * Time: 17:14
+ * Time: 17:14.
  */
 
 namespace App\Service;
 
-
-use App\Repository\AddressRepository;
 use App\Repository\CustomerRepository;
 use App\Repository\OrderRepository;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CustomerManager
 {
@@ -26,8 +25,9 @@ class CustomerManager
 
     /**
      * CustomerManager constructor.
+     *
      * @param CustomerRepository $customerRepository
-     * @param OrderRepository $orderRepository
+     * @param OrderRepository    $orderRepository
      */
     public function __construct(CustomerRepository $customerRepository, OrderRepository $orderRepository)
     {
@@ -42,5 +42,14 @@ class CustomerManager
 
     public function getAddress()
     {
+    }
+
+    public function isCustomerExist(int $id)
+    {
+        $nbr = $this->customerRepository->countCustomer($id);
+
+        if (0 == $nbr) {
+            throw new NotFoundHttpException('Not Found');
+        }
     }
 }

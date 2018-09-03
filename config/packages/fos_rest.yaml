@@ -2,12 +2,14 @@ fos_rest:
     param_fetcher_listener: true
     body_listener: true
     format_listener:
+        enabled: true
         rules:
-            - { path: ^/, priorities: [ json ], fallback_format: ~, prefer_extension: true }
+            - { path: ^/, priorities: [ json ], fallback_format: json, prefer_extension: true }
 
     body_converter:
         enabled: true
         validate: true
+        validation_errors_argument: validationErrors # This is the default value
 
     view:
         view_response_listener: 'force'
@@ -20,3 +22,8 @@ fos_rest:
     allowed_methods_listener: true
     access_denied_listener:
         json: true
+
+#    exception:
+#        enabled: true
+#        codes:
+#            Symfony\Component\HttpKernel\Exception\NotFoundHttpException: 404

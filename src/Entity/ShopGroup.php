@@ -2,13 +2,23 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * ShopGroup.
+ *
  * @ORM\Entity(repositoryClass="App\Repository\ShopGroupRepository")
  */
 class ShopGroup
 {
+    /**
+     * @var                                         Collection|Customer[]
+     * @ORM\OneToMany(targetEntity=Customer::class, cascade={"persist", "remove"}, mappedBy="shopgroup")
+     */
+    private $customer;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -46,6 +56,30 @@ class ShopGroup
      */
     private $deleted;
 
+    /**
+     * ShopGroup constructor.
+     */
+    public function __construct()
+    {
+        $this->customer = new ArrayCollection();
+    }
+
+    /**
+     * @return Customer[]|Collection
+     */
+    public function getCustomer(): Collection
+    {
+        return $this->customer;
+    }
+
+    /**
+     * @param Customer $customer
+     */
+    public function addCustomer(Customer $customer): void
+    {
+        $this->customer->add($customer);
+        $customer->setShopGroup($this);
+    }
 
     public function getId(): ?int
     {
@@ -120,6 +154,19 @@ class ShopGroup
     public function setDeleted(bool $deleted): self
     {
         $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    public function removeCustomer(Customer $customer): self
+    {
+        if ($this->customer->contains($customer)) {
+            $this->customer->removeElement($customer);
+            // set the owning side to null (unless already changed)
+            if ($customer->getShopgroup() === $this) {
+                $customer->setShopgroup(null);
+            }
+        }
 
         return $this;
     }

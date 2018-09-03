@@ -4,7 +4,10 @@ namespace App\Repository;
 
 use App\Entity\Cart;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @method Cart|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +22,62 @@ class CartRepository extends ServiceEntityRepository
         parent::__construct($registry, Cart::class);
     }
 
-//    /**
-//     * @return Cart[] Returns an array of Cart objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return array
+     */
+    public function getCarts(): array
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('cart')
             ->getQuery()
-            ->getResult()
-        ;
+            ->execute();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Cart
+    /**
+     * @param Cart $cart
+     *
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function create(Cart $cart)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $em = $this->getEntityManager();
+        $em->persist($cart);
+
+        $em->flush();
     }
-    */
+
+    /**
+     * @param int $currentUserId
+     * @param int $cartId
+     */
+    public function setEmployee(int $currentUserId, int $cartId)
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb->update()
+            ->set('r.employee', ':employee')
+            ->where('r.id = :id')
+            ->setParameter('employee', $currentUserId)
+            ->setParameter('id', $cartId)
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return mixed
+     */
+    public function getCartById(int $id)
+    {
+        try {
+            return $this->createQueryBuilder('c')
+                ->select(['c'])
+                ->where('c.id = :id')
+                ->setParameter('id', $id)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (NoResultException $e) {
+            throw new NotFoundHttpException('Not Found');
+        } catch (NonUniqueResultException $e) {
+        }
+    }
 }

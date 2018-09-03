@@ -2,14 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\Address;
 use App\Entity\Customer;
+use App\Service\AddressManager;
 use App\Service\CustomerManager;
+use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations\View as ViewAnnotation;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\Annotations;
-
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class CustomerController extends FOSRestController
 {
@@ -19,11 +24,14 @@ class CustomerController extends FOSRestController
      *     name = "get_customer"
      * )
      *
-     * @ParamConverter("customer", class="App\Entity\Customer")
-     * @param Customer $customer
+     * @ParamConverter("customer", class="App\Entity\Customer", options={"repository_method" = "getCustomerById"})
+     *
+     * @param                                     Customer $customer
+     * @ViewAnnotation(serializerGroups={"list"}, statusCode=Response::HTTP_OK)
+     *
      * @return View
      */
-    public function getCustomerAction(Customer $customer) : View
+    public function getCustomerAction(Customer $customer): View
     {
         return $this->view($customer);
     }
@@ -33,18 +41,23 @@ class CustomerController extends FOSRestController
      *     path="/customers",
      *     name = "get_customer_collection"
      * )
+     * @ViewAnnotation(statusCode=Response::HTTP_OK)
+     *
+     * @param CustomerManager $manager
+     *
+     * @IsGranted("ROLE_USER")
      *
      * @return View
      */
-    public function getCustomerCollectionAction() : View
+    public function getCustomerCollectionAction(CustomerManager $manager): View
     {
+        //        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $customers = $this
             ->getDoctrine()
-            ->getManager()
             ->getRepository(Customer::class)
-            ->findAll();
+            ->getCustomers();
 
-        $this->view($customers, Response::HTTP_OK);
+        return $this->view($customers);
     }
 
     /**
@@ -53,40 +66,98 @@ class CustomerController extends FOSRestController
      *     name = "get_customer_address"
      * )
      *
-     * @param CustomerManager $customerManager
+     * @param                                     AddressManager $addressManager
+     * @param                                     Request        $request
+     * @ViewAnnotation(serializerGroups={"list"}, statusCode=Response::HTTP_OK)
+     *
      * @return View
      */
-    public function getCustomerAddressAction(CustomerManager $customerManager) : View
+    public function getCustomerAddressAction(AddressManager $addressManager, Request $request): View
     {
-        $customerManager->getAddress();
-        $this->view([], Response::HTTP_OK);
+        $address = $addressManager->getAddressByClient($request->get('customer'));
+
+        return $this->view($address);
     }
 
     /**
      * @Annotations\Put(
-     *     path="/customer/{customer}/address",
-     *     name = "edit_customer_address"
+     *     path="/customer",
+     *     name = "edit_customer"
      * )
-     * @ParamConverter("address", class="App\Entity\Customer")
-     * @param Customer $customer
-     * @return View
+     *
+     * @param ConstraintViolationListInterface $validationErrors
+     * @param Customer                         $customer
+     * @param CustomerManager                  $manager
+     *
+     * @return                                    View
+     * @ParamConverter("customer",                converter="fos_rest.request_body", class="App\Entity\Customer")
+     * @ViewAnnotation(serializerGroups={"list"}, statusCode=Response::HTTP_ACCEPTED)
      */
-    public function editCustomerAction(Customer $customer) : View
+    public function editCustomerAction(ConstraintViolationListInterface $validationErrors, Customer $customer, CustomerManager $manager): View
     {
+        if (count($validationErrors) > 0) {
+            return $this->view($validationErrors);
+        }
 
+        if ($manager->isCustomerExist($customer->getId()) > 0) {
+            $this
+                ->getDoctrine()
+                ->getRepository('App:Customer')
+                ->updateCustomer($customer);
+        }
+
+        return $this->view($customer);
     }
 
     /**
      * @Annotations\Post(
      *     path="/customer",
-     *     name = "new_customer"
+     *     name = "add_new_customer"
      * )
+     *
+     * @param                                     Customer                         $customer
+     * @param                                     ConstraintViolationListInterface $validationErrors
+     * @ParamConverter("customer",                converter="fos_rest.request_body", class="App\Entity\Customer")
+     * @ViewAnnotation(serializerGroups={"list"}, statusCode=Response::HTTP_CREATED)
      *
      * @return View
      */
-    public function addCustomerAction() : View
+    public function addCustomerAction(ConstraintViolationListInterface $validationErrors, Customer $customer): View
     {
+        $em = $this->getDoctrine()->getManager();
 
+        $customer->setIsActive(1);
+        $customer->setIsDeleted(0);
+        $em->persist($customer);
+
+        $em->flush();
+
+        return $this->view($customer);
+    }
+
+    /**
+     * @Annotations\Post(
+     *     path="/customer/{customer}/address",
+     *     name = "add_new_address_to_customer"
+     * )
+     *
+     * @param ConstraintViolationListInterface $validationErrors
+     * @param Address                          $address
+     * @param Customer                         $customer
+     *
+     * @return                                            View
+     * @ParamConverter("address",                         converter="fos_rest.request_body", class="App\Entity\Address")
+     * @ParamConverter("customer",                        class="App\Entity\Customer", options={"repository_method" = "getCustomerById"})
+     * @ViewAnnotation(statusCode=Response::HTTP_CREATED)
+     */
+    public function addAddressToCustomerAction(ConstraintViolationListInterface $validationErrors, Address $address, Customer $customer): View
+    {
+        $em = $this->getDoctrine()->getManager();
+        $address->setCustomer($customer);
+        $em->persist($address);
+        $em->flush();
+
+        return $this->view($address);
     }
 
     /**
@@ -95,10 +166,19 @@ class CustomerController extends FOSRestController
      *     name = "remove_customer"
      * )
      *
+     * @ViewAnnotation(serializerGroups={"list"}, statusCode=Response::HTTP_NO_CONTENT)
+     * @ParamConverter("customer",                class="App\Entity\Customer", options={"repository_method" = "getCustomerById"})
+     *
+     * @param Customer $customer
+     *
      * @return View
      */
-    public function removeCustomerAction() : View
+    public function removeCustomerAction(Customer $customer): View
     {
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($customer);
+        $em->flush();
 
+        $this->view($customer->getId());
     }
 }

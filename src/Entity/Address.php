@@ -2,10 +2,13 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 /**
- * Address
+ * Address.
  *
  * @ORM\Table(name="address")
  *
@@ -16,14 +19,30 @@ class Address
     /**
      * @var int
      *
-     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(type="integer",          nullable=false, options={"unsigned"=true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"address_list_view"})
      */
     private $id;
 
     /**
+     * @var                                      Collection|Order[]
+     * @ORM\OneToMany(targetEntity=Order::class, cascade={"persist", "remove"}, mappedBy="address_delivery")
+     * @Groups({"address_list_view"})
+     */
+    private $orderAddressDelivery;
+
+    /**
+     * @var                                      Collection|Order[]
+     * @ORM\OneToMany(targetEntity=Order::class, cascade={"persist", "remove"}, mappedBy="address_invoice")
+     * @Groups({"address_list_view"})
+     */
+    private $orderAddressInvoice;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Customer::class, inversedBy="address")
+     * @Groups({"address_list_view"})
      */
     private $customer;
 
@@ -35,7 +54,8 @@ class Address
     /**
      * @var string
      *
-     * @ORM\Column(name="alias", type="string", length=32, nullable=false)
+     * @ORM\Column(name="alias",      type="string", length=32, nullable=false)
+     * @Groups({"address_list_view"})
      */
     private $alias;
 
@@ -43,84 +63,107 @@ class Address
      * @var string|null
      *
      * @ORM\Column(name="company", type="string", length=255, nullable=true)
+     * @Groups({"list",            "address_list_view"})
      */
     private $company;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="lastname", type="string", length=255, nullable=false)
+     * @ORM\Column(name="lastname",   type="string", length=255, nullable=false)
+     * @Groups({"address_list_view"})
      */
     private $lastname;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="firstname", type="string", length=255, nullable=false)
+     * @ORM\Column(name="firstname",  type="string", length=255, nullable=false)
+     * @Groups({"address_list_view"})
      */
     private $firstname;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="address1", type="string", length=128, nullable=false)
+     * @ORM\Column(name="address1",   type="string", length=128, nullable=false)
+     * @Groups({"address_list_view"})
      */
     private $address1;
 
     /**
-     * @ORM\Column(name="address2", type="string", length=128, nullable=true)
+     * @ORM\Column(name="address2",   type="string", length=128, nullable=true)
+     * @Groups({"address_list_view"})
      */
     private $address2;
 
     /**
-     * @ORM\Column(name="postcode", type="string", length=12)
+     * @ORM\Column(name="postcode",   type="string", length=12)
+     * @Groups({"address_list_view"})
      */
     private $postcode;
 
     /**
-     * @ORM\Column(name="city", type="string", length=64)
+     * @ORM\Column(name="city",       type="string", length=64)
+     * @Groups({"address_list_view"})
      */
     private $city;
 
     /**
-     * @ORM\Column(name="other", type="string", length=255, nullable=true)
+     * @ORM\Column(name="other",      type="string", length=255, nullable=true)
+     * @Groups({"address_list_view"})
      */
     private $other;
 
     /**
-     * @ORM\Column(name="phone", type="string", length=32)
+     * @ORM\Column(name="phone",      type="string", length=32)
+     * @Groups({"address_list_view"})
      */
     private $phone;
 
     /**
      * @ORM\Column(name="phone_mobile", type="string", length=32)
+     * @Groups({"address_list_view"})
      */
     private $phone_mobile;
 
     /**
      * @ORM\Column(name="vat_number", type="string", length=32, nullable=true)
+     * @Groups({"address_list_view"})
      */
     private $vat_number;
 
     /**
-     * @ORM\Column(name="dni", type="string", length=16, nullable=true)
+     * @ORM\Column(name="dni",        type="string", length=16, nullable=true)
+     * @Groups({"address_list_view"})
      */
     private $dni;
 
     /**
-     * @ORM\Column(name="deleted", type="boolean", nullable=true)
+     * @ORM\Column(name="deleted",    type="boolean", nullable=true)
+     * @Groups({"address_list_view"})
      */
     private $deleted;
 
     /**
-     * @ORM\Column(name="date_add", type="datetime", nullable=false)
+     * @ORM\Column(name="date_add",   type="datetime", nullable=false)
+     * @Groups({"address_list_view"})
      */
     private $date_add;
 
     /**
-     * @ORM\Column(name="date_upd", type="datetime", nullable=false)
+     * @ORM\Column(name="date_upd",   type="datetime", nullable=false)
+     * @Groups({"address_list_view"})
      */
     private $date_upd;
+
+    public function __construct()
+    {
+        $this->orderAddressDelivery = new ArrayCollection();
+        $this->orderAddressInvoice = new ArrayCollection();
+        $this->date_upd = new \DateTime();
+        $this->date_add = new \DateTime();
+    }
 
     /**
      * @return null|string
@@ -132,6 +175,7 @@ class Address
 
     /**
      * @param string $alias
+     *
      * @return Address
      */
     public function setAlias(string $alias): self
@@ -151,6 +195,7 @@ class Address
 
     /**
      * @param null|string $company
+     *
      * @return Address
      */
     public function setCompany(?string $company): self
@@ -170,6 +215,7 @@ class Address
 
     /**
      * @param string $lastname
+     *
      * @return Address
      */
     public function setLastname(string $lastname): self
@@ -189,6 +235,7 @@ class Address
 
     /**
      * @param string $firstname
+     *
      * @return Address
      */
     public function setFirstname(string $firstname): self
@@ -208,6 +255,7 @@ class Address
 
     /**
      * @param string $address1
+     *
      * @return Address
      */
     public function setAddress1(string $address1): self
@@ -275,6 +323,7 @@ class Address
 
     /**
      * @param null|string $address2
+     *
      * @return Address
      */
     public function setAddress2(?string $address2): self
@@ -294,6 +343,7 @@ class Address
 
     /**
      * @param string $postcode
+     *
      * @return Address
      */
     public function setPostcode(string $postcode): self
@@ -313,6 +363,7 @@ class Address
 
     /**
      * @param string $city
+     *
      * @return Address
      */
     public function setCity(string $city): self
@@ -332,6 +383,7 @@ class Address
 
     /**
      * @param null|string $other
+     *
      * @return Address
      */
     public function setOther(?string $other): self
@@ -351,6 +403,7 @@ class Address
 
     /**
      * @param string $phone
+     *
      * @return Address
      */
     public function setPhone(string $phone): self
@@ -370,6 +423,7 @@ class Address
 
     /**
      * @param string $phone_mobile
+     *
      * @return Address
      */
     public function setPhoneMobile(string $phone_mobile): self
@@ -389,6 +443,7 @@ class Address
 
     /**
      * @param null|string $vat_number
+     *
      * @return Address
      */
     public function setVatNumber(?string $vat_number): self
@@ -408,6 +463,7 @@ class Address
 
     /**
      * @param null|string $dni
+     *
      * @return Address
      */
     public function setDni(?string $dni): self
@@ -427,6 +483,7 @@ class Address
 
     /**
      * @param bool|null $deleted
+     *
      * @return Address
      */
     public function setDeleted(?bool $deleted): self
@@ -446,6 +503,7 @@ class Address
 
     /**
      * @param \DateTimeInterface $date_add
+     *
      * @return Address
      */
     public function setDateAdd(\DateTimeInterface $date_add): self
@@ -465,11 +523,74 @@ class Address
 
     /**
      * @param \DateTimeInterface $date_upd
+     *
      * @return Address
      */
     public function setDateUpd(\DateTimeInterface $date_upd): self
     {
         $this->date_upd = $date_upd;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Order[]
+     */
+    public function getOrderAddressDelivery(): Collection
+    {
+        return $this->orderAddressDelivery;
+    }
+
+    public function addOrderAddressDelivery(Order $orderAddressDelivery): self
+    {
+        if (!$this->orderAddressDelivery->contains($orderAddressDelivery)) {
+            $this->orderAddressDelivery[] = $orderAddressDelivery;
+            $orderAddressDelivery->setAddressDelivery($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrderAddressDelivery(Order $orderAddressDelivery): self
+    {
+        if ($this->orderAddressDelivery->contains($orderAddressDelivery)) {
+            $this->orderAddressDelivery->removeElement($orderAddressDelivery);
+            // set the owning side to null (unless already changed)
+            if ($orderAddressDelivery->getAddressDelivery() === $this) {
+                $orderAddressDelivery->setAddressDelivery(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Order[]
+     */
+    public function getOrderAddressInvoice(): Collection
+    {
+        return $this->orderAddressInvoice;
+    }
+
+    public function addOrderAddressInvoice(Order $orderAddressInvoice): self
+    {
+        if (!$this->orderAddressInvoice->contains($orderAddressInvoice)) {
+            $this->orderAddressInvoice[] = $orderAddressInvoice;
+            $orderAddressInvoice->setAddressInvoice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrderAddressInvoice(Order $orderAddressInvoice): self
+    {
+        if ($this->orderAddressInvoice->contains($orderAddressInvoice)) {
+            $this->orderAddressInvoice->removeElement($orderAddressInvoice);
+            // set the owning side to null (unless already changed)
+            if ($orderAddressInvoice->getAddressInvoice() === $this) {
+                $orderAddressInvoice->setAddressInvoice(null);
+            }
+        }
 
         return $this;
     }

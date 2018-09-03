@@ -3,18 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Address;
-use App\Service\CustomerManager;
-use FOS\RestBundle\Controller\FOSRestController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations\View as ViewAnnotation;
+use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validation;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class AddressController extends FOSRestController
 {
@@ -23,17 +21,18 @@ class AddressController extends FOSRestController
      *     path="/address",
      *     name = "get_address_collection"
      * )
+     * @ViewAnnotation(serializerGroups={"address_list_view"}, statusCode=Response::HTTP_OK)
      *
      * @return View
      */
-    public function getAddressCollectionAction() : View
+    public function getAddressCollectionAction(): View
     {
         $repo = $this
             ->getDoctrine()
             ->getManager()
             ->getRepository(Address::class);
 
-        return $this->view($repo->findAll() , Response::HTTP_OK);
+        return $this->view($repo->findAll());
     }
 
     /**
@@ -41,14 +40,16 @@ class AddressController extends FOSRestController
      *     path="/address/{address}",
      *     name = "get_address"
      * )
+     * @ParamConverter("address", class="App\Entity\Address", options={"repository_method" = "findById"})
      *
-     * @ParamConverter("address", class="App\Entity\Address")
-     * @param Address $address
+     * @param                                                  Address $address
+     * @ViewAnnotation(serializerGroups={"address_list_view"}, statusCode=Response::HTTP_OK)
+     *
      * @return View
      */
-    public function getAddressAction(Address $address) : View
+    public function getAddressAction(Address $address): View
     {
-        return $this->view($address , Response::HTTP_OK);
+        return $this->view($address);
     }
 
     /**
@@ -57,21 +58,30 @@ class AddressController extends FOSRestController
      *     name = "new_address"
      * )
      *
-     * @param SerializerInterface $serializer
-     * @param Request $request
+     * @param                     ConstraintViolationListInterface $validationErrors
+     * @ParamConverter("address", converter="fos_rest.request_body", class="App\Entity\Address")
      *
-     * @return View(statusCode=Response::HTTP_CREATED)
+     * @param                                                  Address                          $address
+     * @ViewAnnotation(serializerGroups={"address_list_view"}, statusCode=Response::HTTP_CREATED)
+     *
+     * @return View()
      */
-    public function newAddressAction(SerializerInterface $serializer, Request $request) : View
+    public function newAddressAction(ConstraintViolationListInterface $validationErrors, Address $address): View
     {
-        $json = $request->getContent();
-        $address   = $serializer->deserialize($json, Address::class, 'json');
-        $em = $this->getDoctrine()->getManager();
+        if (count($validationErrors) > 0) {
+            return $this->view([], Response::HTTP_BAD_REQUEST);
+        }
 
-        $em->persist($address);
-        $em->flush();
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($address);
+            $em->flush();
+        } catch (NoResultException $e) {
+            throw new NotFoundHttpException('Not Found');
+        } catch (NonUniqueResultException $e) {
+        }
 
-        return $this->view([], Response::HTTP_CREATED);
+        return $this->view($address);
     }
 
     /**
@@ -80,17 +90,18 @@ class AddressController extends FOSRestController
      *     name = "remove_address"
      * )
      *
-     * @ParamConverter("address", class="App\Entity\Address")
-     * @param Address $address
+     * @param                     Address $address
+     * @ParamConverter("address", class="App\Entity\Address", options={"repository_method" = "findById"})
+     *
      * @return View(statusCode=Response::HTTP_NO_CONTENT)
      */
-    public function removeAddressAction(Address $address) : View
+    public function removeAddressAction(Address $address): View
     {
         $em = $this->getDoctrine()->getManager();
         $em->remove($address);
         $em->flush();
 
-        return $this->view([], Response::HTTP_NO_CONTENT);
+        return $this->view([]);
     }
 
     /**
@@ -99,17 +110,19 @@ class AddressController extends FOSRestController
      *     name = "edit_address"
      * )
      *
-     * @ParamConverter("address", class="App\Entity\Address")
-     * @param Address $address
-     * @return View(statusCode=Response::HTTP_NO_CONTENT)
+     * @ParamConverter("address", class="App\Entity\Address", options={"repository_method" = "findById"})
+     *
+     * @param                                                  Address $address
+     * @ViewAnnotation(serializerGroups={"address_list_view"}, statusCode=Response::HTTP_ACCEPTED)
+     *
+     * @return View()
      */
-    public function editAddressAction(Address $address) : View
+    public function editAddressAction(Address $address): View
     {
-
         $em = $this->getDoctrine()->getManager();
         $em->remove($address);
         $em->flush();
 
-        return $this->view([], Response::HTTP_NO_CONTENT);
+        return $this->view([]);
     }
 }

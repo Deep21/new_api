@@ -19,9 +19,9 @@ class CurrencyRepository extends ServiceEntityRepository
         parent::__construct($registry, Currency::class);
     }
 
-//    /**
-//     * @return Currency[] Returns an array of Currency objects
-//     */
+    //    /**
+    //     * @return Currency[] Returns an array of Currency objects
+    //     */
     /*
     public function findByExampleField($value)
     {

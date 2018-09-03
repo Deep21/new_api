@@ -5,8 +5,11 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 /**
+ * Manufacturer.
+ *
  * @ORM\Entity(repositoryClass="App\Repository\ManufacturerRepository")
  */
 class Manufacturer
@@ -15,11 +18,17 @@ class Manufacturer
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"product"})
      */
     private $id;
 
     /**
-     * @var Collection|Address[] $address
+     * @var                                            Collection|Product[]
+     * @ORM\OneToMany(targetEntity=CartProduct::class, cascade={"persist", "remove"}, mappedBy="manufacturer")
+     */
+    private $product;
+    /**
+     * @var                                        Collection|Address[]
      * @ORM\OneToMany(targetEntity=Address::class, cascade={"persist", "remove"}, mappedBy="manufacturer")
      */
     private $address;
@@ -50,6 +59,7 @@ class Manufacturer
     public function __construct()
     {
         $this->address = new ArrayCollection();
+        $this->product = new ArrayCollection();
     }
 
     /**
@@ -70,6 +80,7 @@ class Manufacturer
 
     /**
      * @param string $name
+     *
      * @return Manufacturer
      */
     public function setName(string $name): self
@@ -89,6 +100,7 @@ class Manufacturer
 
     /**
      * @param \DateTimeInterface $date_add
+     *
      * @return Manufacturer
      */
     public function setDateAdd(\DateTimeInterface $date_add): self
@@ -108,6 +120,7 @@ class Manufacturer
 
     /**
      * @param \DateTimeInterface $date_upd
+     *
      * @return Manufacturer
      */
     public function setDateUpd(\DateTimeInterface $date_upd): self
@@ -127,6 +140,7 @@ class Manufacturer
 
     /**
      * @param bool $active
+     *
      * @return Manufacturer
      */
     public function setActive(bool $active): self
@@ -139,7 +153,7 @@ class Manufacturer
     /**
      * @return Address[]|Collection
      */
-    public function getAddress() : Collection
+    public function getAddress(): Collection
     {
         return $this->address;
     }
@@ -153,4 +167,47 @@ class Manufacturer
         $address->setCustomer($this);
     }
 
+    public function removeAddress(Address $address): self
+    {
+        if ($this->address->contains($address)) {
+            $this->address->removeElement($address);
+            // set the owning side to null (unless already changed)
+            if ($address->getManufacturer() === $this) {
+                $address->setManufacturer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Product[]
+     */
+    public function getProduct(): Collection
+    {
+        return $this->product;
+    }
+
+    public function addProduct(Product $product): self
+    {
+        if (!$this->product->contains($product)) {
+            $this->product[] = $product;
+            $product->setManufacturer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): self
+    {
+        if ($this->product->contains($product)) {
+            $this->product->removeElement($product);
+            // set the owning side to null (unless already changed)
+            if ($product->getManufacturer() === $this) {
+                $product->setManufacturer(null);
+            }
+        }
+
+        return $this;
+    }
 }
