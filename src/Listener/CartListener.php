@@ -35,7 +35,7 @@ class CartListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
-        return [CartEvent::CART_DECREASE => 'onCartDecrease', CartEvent::CART_UPDATE => 'onCartUpdate'];
+        return [CartEvent::CART_DECREASE => 'onCartDecrease', CartEvent::CART_INCREASE => 'onCartIncrease'];
     }
 
     /**
@@ -52,9 +52,10 @@ class CartListener implements EventSubscriberInterface
         $this->cartProductRepository->downQty($event->getCart());
     }
 
-    public function onCartUpdate(CartEvent $event): void
+    public function onCartIncrease()
     {
-        dump($event->getMsg());
-        exit;
+
     }
+
+
 }

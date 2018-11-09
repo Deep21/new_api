@@ -18,7 +18,7 @@ class CartProduct
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=CartProduct::class, inversedBy="cartProduct")
+     * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="cartProduct")
      */
     private $product;
 

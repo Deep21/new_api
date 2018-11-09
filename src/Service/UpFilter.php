@@ -9,8 +9,13 @@
 namespace App\Service;
 
 
+use App\Model\CartProduct;
+
 class UpFilter implements FilterInterface
 {
+    /**
+     * @var CartManager $cartManager
+     */
     private $cartManager;
 
     /**
@@ -31,10 +36,15 @@ class UpFilter implements FilterInterface
     }
 
     /**
-     *
+     * @param CartProduct $cartProduct
      */
-    public function apply() : void
+    public function apply(CartProduct $cartProduct) : void
     {
-        dd(__CLASS__);
+        $this->cartManager->decreaseQty($cartProduct);
+    }
+
+    public function setModel()
+    {
+        // TODO: Implement setModel() method.
     }
 }

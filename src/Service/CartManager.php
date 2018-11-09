@@ -9,14 +9,12 @@
 namespace App\Service;
 
 use App\Entity\Cart;
-use App\Entity\CartProduct;
+use App\Model\CartProduct;
 use App\Listener\CartEvent;
 use App\Repository\CartProductRepository;
 use App\Repository\CartRepository;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class CartManager

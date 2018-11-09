@@ -9,9 +9,11 @@
 namespace App\Service;
 
 
+use App\Model\CartProduct;
+
 interface FilterInterface
 {
-    public function apply() : void;
+    public function apply(CartProduct $cart) : void;
 
     public function injectManager(CartManager $cartManager) : FilterInterface;
 

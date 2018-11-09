@@ -124,7 +124,7 @@ class CartController extends FOSRestController
         }
 
         $filter = FilterFactory::create($request)->injectManager($cartManager);
-        $filter->apply();
+        $filter->apply($cartProduct);
 
 
         return $this->view(
