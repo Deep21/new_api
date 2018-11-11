@@ -9,8 +9,8 @@
 namespace App\Service;
 
 use App\Entity\Cart;
+use App\Event\CartEvent;
 use App\Model\CartProduct;
-use App\Listener\CartEvent;
 use App\Repository\CartProductRepository;
 use App\Repository\CartRepository;
 use Doctrine\ORM\ORMException;
@@ -63,8 +63,7 @@ class CartManager
     public function increaseQty(CartProduct $cart)
     {
         $cart = $this->cartProductRepository->getCart($cart->getId());
-        $this->eventDispatcher->dispatch(CartEvent::CART_INCREASE, new CartEvent($cart));
-        $this->cartProductRepository->upQty($cart);
+        $this->eventDispatcher->dispatch(CartEvent::CART_UPDATE, new CartEvent($cart));
     }
 
     /**
@@ -73,7 +72,7 @@ class CartManager
     public function decreaseQty(CartProduct $cart)
     {
         $cart = $this->cartProductRepository->getCart($cart->getId());
-        $this->eventDispatcher->dispatch(CartEvent::CART_DECREASE, new CartEvent($cart));
+        $this->eventDispatcher->dispatch(CartEvent::CART_UPDATE, new CartEvent($cart));
     }
 
     /**

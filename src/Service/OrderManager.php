@@ -9,14 +9,22 @@
 namespace App\Service;
 
 use App\Entity\Order;
+use App\Event\OrderEvent;
 use App\Repository\OrderDetailRepository;
 use App\Repository\OrderRepository;
+use Doctrine\ORM\ORMException;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class OrderManager.
  */
-class OrderManager extends AbstractOrderManager
+class OrderManager
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
     /**
      * @var OrderRepository
      */
@@ -24,34 +32,37 @@ class OrderManager extends AbstractOrderManager
     /**
      * @var OrderDetailRepository
      */
-    private $orderDetail;
+    private $detailRepository;
 
     /**
      * OrderManager constructor.
-     *
-     * @param OrderRepository       $orderRepository
-     * @param OrderDetailRepository $orderDetail
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param OrderRepository $orderRepository
+     * @param OrderDetailRepository $detailRepository
      */
-    public function __construct(OrderRepository $orderRepository, OrderDetailRepository $orderDetail)
+    public function __construct(EventDispatcherInterface $eventDispatcher,
+                                OrderRepository $orderRepository,
+                                OrderDetailRepository $detailRepository
+    )
     {
-        parent::__construct($orderRepository);
-        $this->orderRepository = $orderRepository;
-        $this->orderDetail = $orderDetail;
+        $this->eventDispatcher  = $eventDispatcher;
+        $this->orderRepository  = $orderRepository;
+        $this->detailRepository = $detailRepository;
     }
 
     /**
-     * @param \App\Model\Order $order
+     * @param \App\Model\Order $orderModel
      */
-    public function onCreateNewOrder(\App\Model\Order $order)
+    public function placeOrder(\App\Model\Order $orderModel)
     {
-        $this->orderDetail->createOrderDetail($order);
+        $productsCart = $orderModel->getCart()->getCartProduct();
+        try {
+            $order = $this->orderRepository->createOrder();
+            $this->orderRepository->updateOrder($orderModel, $order->getId());
+            $this->detailRepository->insertOrderDetail($productsCart, $order);
+
+        } catch (ORMException $e) {
+        }
     }
 
-    /**
-     * @param \App\Model\Order $order
-     */
-    public function onUpdateOrder(\App\Model\Order $order)
-    {
-        $this->orderRepository->updateOrder($order);
-    }
 }

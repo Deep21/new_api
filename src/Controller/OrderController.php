@@ -80,7 +80,7 @@ class OrderController extends FOSRestController
      */
     public function createNewOrderAction(\App\Model\Order $order, OrderManager $orderManager): View
     {
-        $orderManager->createNewOrder($order);
+        $orderManager->placeOrder($order);
 
         return $this->view($order);
     }

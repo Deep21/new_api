@@ -8,6 +8,7 @@
 
 namespace App\Listener;
 
+use App\Event\CartEvent;
 use App\Repository\CartProductRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -28,6 +29,11 @@ class CartListener implements EventSubscriberInterface
         $this->cartProductRepository = $cartProductRepository;
     }
 
+    public function checkStock(CartEvent $event)
+    {
+        dump(__LINE__);
+    }
+
     /**
      * Returns an array of events this subscriber wants to listen to.
      *
@@ -35,7 +41,12 @@ class CartListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
-        return [CartEvent::CART_DECREASE => 'onCartDecrease', CartEvent::CART_INCREASE => 'onCartIncrease'];
+        return [
+            CartEvent::CART_UPDATE => [
+                ['checkStock'],
+                ['onCartUpdate']
+            ]
+        ];
     }
 
     /**
@@ -54,6 +65,12 @@ class CartListener implements EventSubscriberInterface
 
     public function onCartIncrease()
     {
+
+    }
+
+    public function onCartUpdate(CartEvent $event)
+    {
+        dump(__LINE__);
 
     }
 

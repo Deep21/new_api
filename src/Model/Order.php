@@ -30,7 +30,7 @@ class Order
     /**
      * @return Customer
      */
-    public function getCustomer(): Customer
+    public function getCustomer(): ? Customer
     {
         return $this->customer;
     }

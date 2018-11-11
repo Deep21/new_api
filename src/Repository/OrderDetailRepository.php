@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\OrderDetail;
-use App\Model\Order;
+use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -23,6 +25,35 @@ class OrderDetailRepository extends ServiceEntityRepository
     public function createOrderDetail(Order $order)
     {
     }
+
+    /**
+     * @param array $cartProducts
+     * @param Order $order
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function insertOrderDetail(array $cartProducts = [], Order $order)
+    {
+        $em = $this->getEntityManager();
+
+        /** @var \App\Model\CartProduct $cartProduct */
+        foreach ($cartProducts as $cartProduct) {
+            $orderDetail = new OrderDetail();
+            $orderDetail->setProductName($cartProduct->getProductName());
+            $orderDetail->setProductQuantity($cartProduct->getQuantity());
+            $em->persist($orderDetail);
+
+            $this->createQueryBuilder('o')
+                ->update('o')
+                ->set('o.order', ':orderId')
+                ->where('o.id = :id')
+                ->setParameter('orderId', $order->getId())
+                ->setParameter('id', $orderDetail->getId());
+        }
+            $em->flush();
+
+    }
+
 
     //    /**
     //     * @return OrderDetail[] Returns an array of OrderDetail objects

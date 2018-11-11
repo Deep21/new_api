@@ -136,7 +136,7 @@ class Order
         return $this;
     }
 
-    public function getCart(): ?Cart
+    public function getCart(): ? Cart
     {
         return $this->cart;
     }

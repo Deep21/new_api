@@ -6,7 +6,7 @@
  * Time: 23:38.
  */
 
-namespace App\Listener;
+namespace App\Event;
 
 use App\Entity\CartProduct;
 use Symfony\Component\EventDispatcher\Event;

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Cart;
 use App\Factorie\Customer\FilterFactory;
 use App\Model\CartProduct;
+use App\Repository\CartProductRepository;
 use App\Service\CartManager;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\Controller\Annotations\View as ViewAnnotation;
@@ -111,19 +112,19 @@ class CartController extends FOSRestController
      * )
      * @ParamConverter("cartProduct",                converter="fos_rest.request_body", class="App\Model\CartProduct")
      * @param                                        ConstraintViolationListInterface $validationErrors
-     * @param                                        CartProduct                      $cartProduct
-     * @param                                        Request                          $request
-     * @param                                        CartManager                      $cartManager
+     * @param                                        CartProduct $cartProduct
+     * @param                                        Request $request
+     * @param CartProductRepository $cartManager
      * @return                                       View
      * @ViewAnnotation(statusCode=Response::HTTP_OK)
      */
-    public function editProductAction(ConstraintViolationListInterface $validationErrors, CartProduct $cartProduct, Request $request, CartManager $cartManager): View
+    public function editProductAction(ConstraintViolationListInterface $validationErrors, CartProduct $cartProduct, Request $request, CartProductRepository $cartManager): View
     {
         if (count($validationErrors) > 0) {
             return $this->view([], Response::HTTP_BAD_REQUEST);
         }
 
-        $filter = FilterFactory::create($request)->injectManager($cartManager);
+        $filter = FilterFactory::create($request)->injectRepository($cartManager);
         $filter->apply($cartProduct);
 
 

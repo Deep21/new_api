@@ -39,18 +39,11 @@ class Cart
     }
 
     /**
-     * @return CartProduct
+     * @return array
      */
-    public function getCartProduct() : CartProduct
+    public function getCartProduct() : array
     {
         return $this->cart_product;
     }
 
-    /**
-     * @param CartProduct $cart_product
-     */
-    public function setCartProduct(CartProduct $cart_product): void
-    {
-        $this->cart_product = $cart_product;
-    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Model\Customer;
 use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -74,8 +75,9 @@ class OrderRepository extends ServiceEntityRepository
 
     /**
      * @param \App\Model\Order $order
+     * @param $orderId
      */
-    public function updateOrder(\App\Model\Order $order)
+    public function updateOrder(\App\Model\Order $order, $orderId)
     {
         $qb = $this->createQueryBuilder('o')->update();
 
@@ -84,15 +86,12 @@ class OrderRepository extends ServiceEntityRepository
                 ->set('o.customer', ':customerId')
                 ->setParameter('customerId', $order->getCustomer()->getId());
         }
+
         $qb
             ->set('o.cart', ':cartId')
             ->where('o.id = :orderId')
-            ->setParameters(
-                [
-                    'orderId' => $orderId,
-                    'cartId' => $cart->getId(),
-                ]
-            )
+            ->setParameter('orderId', $orderId)
+            ->setParameter('cartId', $order->getCart()->getId())
             ->getQuery()
             ->execute();
     }

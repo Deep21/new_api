@@ -10,11 +10,16 @@ namespace App\Service;
 
 
 use App\Model\CartProduct;
+use Doctrine\ORM\EntityRepository;
 
 interface FilterInterface
 {
     public function apply(CartProduct $cart) : void;
 
-    public function injectManager(CartManager $cartManager) : FilterInterface;
+    /**
+     * @param EntityRepository $entityRepository
+     * @return FilterInterface
+     */
+    public function injectRepository(EntityRepository $entityRepository) : self;
 
 }

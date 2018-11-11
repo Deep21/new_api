@@ -10,13 +10,14 @@ namespace App\Service;
 
 
 use App\Model\CartProduct;
+use Doctrine\ORM\EntityRepository;
 
 class UpFilter implements FilterInterface
 {
     /**
-     * @var CartManager $cartManager
+     * @var EntityRepository $entityRepository
      */
-    private $cartManager;
+    private $entityRepository;
 
     /**
      * UpFilter constructor.
@@ -26,12 +27,12 @@ class UpFilter implements FilterInterface
     }
 
     /**
-     * @param  CartManager $cartManager
-     * @return $this|FilterInterface
+     * @param EntityRepository $entityRepository
+     * @return FilterInterface
      */
-    public function injectManager(CartManager $cartManager) : FilterInterface
+    public function injectRepository(EntityRepository $entityRepository) : FilterInterface
     {
-        $this->cartManager = $cartManager;
+        $this->entityRepository = $entityRepository;
         return $this;
     }
 
