@@ -35,7 +35,7 @@ class Order
     private $shop;
 
     /**
-     * @ORM\ManyToOne(targetEntity=CartProduct::class, inversedBy="order")
+     * @ORM\ManyToOne(targetEntity=Cart::class, inversedBy="order")
      */
     private $cart;
 
@@ -261,5 +261,13 @@ class Order
         }
 
         return $this;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
     }
 }

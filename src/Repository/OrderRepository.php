@@ -2,7 +2,8 @@
 
 namespace App\Repository;
 
-use App\Model\Customer;
+use App\Entity\Cart;
+use App\Entity\Customer;
 use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -57,15 +58,22 @@ class OrderRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param Cart $cart
+     * @param Customer $customer
      * @return Order
      *
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function createOrder()
+    public function createOrder(Cart $cart, Customer $customer)
     {
+
         $order = new Order();
         $order->setReference('refere');
         $order->setCurrentState(1);
+        $order->setCart($cart);
+        $order->setCustomer($customer);
+
         $em = $this->getEntityManager();
         $em->persist($order);
         $em->flush();
@@ -75,9 +83,9 @@ class OrderRepository extends ServiceEntityRepository
 
     /**
      * @param \App\Model\Order $order
-     * @param $orderId
+     * @param Order $orderEntity
      */
-    public function updateOrder(\App\Model\Order $order, $orderId)
+    public function updateOrder(\App\Model\Order $order, Order $orderEntity)
     {
         $qb = $this->createQueryBuilder('o')->update();
 
@@ -90,7 +98,7 @@ class OrderRepository extends ServiceEntityRepository
         $qb
             ->set('o.cart', ':cartId')
             ->where('o.id = :orderId')
-            ->setParameter('orderId', $orderId)
+            ->setParameter('orderId', 1)
             ->setParameter('cartId', $order->getCart()->getId())
             ->getQuery()
             ->execute();

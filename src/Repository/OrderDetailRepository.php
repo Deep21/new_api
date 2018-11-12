@@ -41,17 +41,32 @@ class OrderDetailRepository extends ServiceEntityRepository
             $orderDetail = new OrderDetail();
             $orderDetail->setProductName($cartProduct->getProductName());
             $orderDetail->setProductQuantity($cartProduct->getQuantity());
+            $orderDetail->setOrder($order);
             $em->persist($orderDetail);
-
-            $this->createQueryBuilder('o')
-                ->update('o')
-                ->set('o.order', ':orderId')
-                ->where('o.id = :id')
-                ->setParameter('orderId', $order->getId())
-                ->setParameter('id', $orderDetail->getId());
         }
             $em->flush();
 
+    }
+
+    /**
+     * @throws ORMException
+     */
+    public function t()
+    {
+        $em = $this->getEntityManager();
+        $order = $em->getReference(Order::class,28);
+
+        $detail = new OrderDetail();
+        $order = new Order();
+        $order->setId(28);
+        $order->setReference('t');
+        $order->setCurrentState(1);
+        $detail->setProductName("TEST");
+        $detail->setProductQuantity(2);
+
+        $detail->setOrder($order);
+        $em->merge($detail);
+        $em->flush();
     }
 
 
