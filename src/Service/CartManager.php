@@ -117,10 +117,11 @@ class CartManager
 
     /**
      * @param Cart $cart
+     * @param CartProduct $cartProduct
      */
-    public function createCartProduct(Cart $cart)
+    public function createCartProduct(Cart $cart, CartProduct $cartProduct)
     {
-        $this->cartProductRepository->create($cart);
+        $this->cartProductRepository->create($cart, $cartProduct);
     }
 
     /**

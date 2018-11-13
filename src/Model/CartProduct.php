@@ -70,7 +70,7 @@ class CartProduct
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getProductAttribute()
     {
@@ -78,9 +78,9 @@ class CartProduct
     }
 
     /**
-     * @param mixed $product_attribute
+     * @param int $product_attribute
      */
-    public function setProductAttribute($product_attribute): void
+    public function setProductAttribute(int $product_attribute): void
     {
         $this->product_attribute = $product_attribute;
     }

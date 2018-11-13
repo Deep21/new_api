@@ -60,7 +60,6 @@ class OrderManager
         try {
             $order = $this->orderRepository->createOrder($orderModel);
             $this->detailRepository->insertOrderDetail($productsCart, $order);
-//        $this->detailRepository->t();
 
         } catch (ORMException $e) {
             dd($e->getMessage());

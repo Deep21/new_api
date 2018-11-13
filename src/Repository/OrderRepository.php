@@ -2,11 +2,10 @@
 
 namespace App\Repository;
 
-use App\Entity\Cart;
-use App\Entity\Order;
+use App\Model\Cart;
 use App\Entity\Customer;
+use App\Entity\Order;
 use App\Utils\OrderUtil;
-use App\Utils\Tools;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;

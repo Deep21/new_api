@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Cart;
 use App\Entity\CartProduct;
+use App\Entity\Product;
+use App\Entity\ProductAttribute;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\NonUniqueResultException;
@@ -28,20 +30,24 @@ class CartProductRepository extends ServiceEntityRepository
 
     /**
      * @param Cart $cart
+     * @param \App\Model\CartProduct $cartProductModel
      */
-    public function create(Cart $cart)
+    public function create(Cart $cart, \App\Model\CartProduct $cartProductModel)
     {
         try {
             $em = $this->getEntityManager();
+            $product = $em->getReference(Product::class, $cartProductModel->getProduct());
+            $productAttribute = $em->getReference(ProductAttribute::class, $cartProductModel->getProductAttribute());
 
             $cartProduct = new CartProduct();
-            $cartProduct->setId($idCart);
-            $cartProduct->setQuantity(0);
-            $cartProduct->setProduct($cart->get);
-            $cartProduct->setProductAttribute();
+            $cartProduct->setId($cart->getId());
+            $cartProduct->setQuantity($cartProductModel->getQuantity());
+            $cartProduct->setProduct($product);
+            $cartProduct->setProductAttribute($productAttribute);
             $cartProduct->setCreatedAt(new \DateTime());
             $em->persist($cartProduct);
             $em->flush();
+
         } catch (OptimisticLockException $e) {
         } catch (ORMException $e) {
         }

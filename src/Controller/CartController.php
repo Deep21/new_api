@@ -77,7 +77,7 @@ class CartController extends FOSRestController
         }
         $cart = $cartManager->createNewCart();
 
-        $cartManager->createCartProduct($cart);
+        $cartManager->createCartProduct($cart, $cartProduct);
         $cartProduct->setId($cart->getId());
         $cartManager->addProduct($cartProduct);
 
