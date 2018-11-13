@@ -33,35 +33,21 @@ class OrderManager
      * @var OrderDetailRepository
      */
     private $detailRepository;
-    /**
-     * @var CartRepository
-     */
-    private $cartRepository;
-    /**
-     * @var CustomerRepository
-     */
-    private $customerRepository;
 
     /**
      * OrderManager constructor.
      * @param EventDispatcherInterface $eventDispatcher
      * @param OrderRepository $orderRepository
      * @param OrderDetailRepository $detailRepository
-     * @param CartRepository $cartRepository
-     * @param CustomerRepository $customerRepository
      */
     public function __construct(EventDispatcherInterface $eventDispatcher,
                                 OrderRepository $orderRepository,
-                                OrderDetailRepository $detailRepository,
-                                CartRepository $cartRepository,
-                                CustomerRepository $customerRepository
+                                OrderDetailRepository $detailRepository
     )
     {
         $this->eventDispatcher  = $eventDispatcher;
         $this->orderRepository  = $orderRepository;
         $this->detailRepository = $detailRepository;
-        $this->cartRepository   = $cartRepository;
-        $this->customerRepository = $customerRepository;
     }
 
     /**
@@ -69,15 +55,15 @@ class OrderManager
      */
     public function placeOrder(\App\Model\Order $orderModel)
     {
-/*        $productsCart     = $orderModel->getCart()->getCartProduct();
-        $cart             = $this->cartRepository->findOneBy(['id' => $orderModel->getCart()->getId()]);
-        $customer         = $this->customerRepository->findOneBy(['id' => $orderModel->getCustomer()->getId()]);*/
+        $productsCart     = $orderModel->getCart()->getCartProduct();
+
         try {
-//            $order = $this->orderRepository->createOrder($cart, $customer);
-//            $this->detailRepository->insertOrderDetail($productsCart, $order);
-            $this->detailRepository->t();
+            $order = $this->orderRepository->createOrder($orderModel);
+            $this->detailRepository->insertOrderDetail($productsCart, $order);
+//        $this->detailRepository->t();
 
         } catch (ORMException $e) {
+            dd($e->getMessage());
         }
     }
 

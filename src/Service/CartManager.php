@@ -85,19 +85,18 @@ class CartManager
 
 
     /**
-     * @return int|null
+     * @return Cart
      */
     public function createNewCart()
     {
         $cart = new Cart();
-
         try {
             $this->cartRepository->create($cart);
             $this->cartRepository->setEmployee($this->manager->getToken()->getUser()->getId(), $cart->getId());
         } catch (ORMException $e) {
         }
 
-        return $cart->getId();
+        return $cart;
     }
 
     /**
@@ -117,14 +116,11 @@ class CartManager
     }
 
     /**
-     * @param int $idCart
+     * @param Cart $cart
      */
-    public function createCartProduct(int $idCart)
+    public function createCartProduct(Cart $cart)
     {
-        $c = new CartProduct();
-        $c->setId($idCart);
-        $c->setQuantity(0);
-        $this->cartProductRepository->create($c);
+        $this->cartProductRepository->create($cart);
     }
 
     /**

@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Cart;
-use App\Entity\Customer;
 use App\Entity\Order;
+use App\Entity\Customer;
+use App\Utils\OrderUtil;
+use App\Utils\Tools;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -58,21 +60,25 @@ class OrderRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Cart $cart
-     * @param Customer $customer
+     * @param \App\Model\Order $model
      * @return Order
      *
      * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    public function createOrder(Cart $cart, Customer $customer)
-    {
 
+     */
+    public function createOrder(\App\Model\Order $model)
+    {
+        $em   = $this->getEntityManager();
+        $cart = $em->getReference(Cart::class, $model->getCart()->getId());
         $order = new Order();
-        $order->setReference('refere');
+        $order->setReference(OrderUtil::generateReference());
         $order->setCurrentState(1);
         $order->setCart($cart);
-        $order->setCustomer($customer);
+
+        if($model->getCustomer() !=null) {
+            $customer = $em->getReference(Customer::class, $model->getCustomer()->getId());
+            $order->setCustomer($customer);
+        }
 
         $em = $this->getEntityManager();
         $em->persist($order);

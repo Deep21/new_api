@@ -27,13 +27,19 @@ class CartProductRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param CartProduct $cartProduct
+     * @param Cart $cart
      */
-    public function create(CartProduct $cartProduct)
+    public function create(Cart $cart)
     {
         try {
-            $cartProduct->setCreatedAt(new \DateTime());
             $em = $this->getEntityManager();
+
+            $cartProduct = new CartProduct();
+            $cartProduct->setId($idCart);
+            $cartProduct->setQuantity(0);
+            $cartProduct->setProduct($cart->get);
+            $cartProduct->setProductAttribute();
+            $cartProduct->setCreatedAt(new \DateTime());
             $em->persist($cartProduct);
             $em->flush();
         } catch (OptimisticLockException $e) {

@@ -54,18 +54,15 @@ class OrderDetailRepository extends ServiceEntityRepository
     public function t()
     {
         $em = $this->getEntityManager();
-        $order = $em->getReference(Order::class,28);
-
+        $order = $em->getReference(Order::class,300);
         $detail = new OrderDetail();
-        $order = new Order();
-        $order->setId(28);
         $order->setReference('t');
         $order->setCurrentState(1);
         $detail->setProductName("TEST");
         $detail->setProductQuantity(2);
 
         $detail->setOrder($order);
-        $em->merge($detail);
+        $em->persist($detail);
         $em->flush();
     }
 

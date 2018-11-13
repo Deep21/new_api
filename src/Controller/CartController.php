@@ -61,7 +61,7 @@ class CartController extends FOSRestController
      *     name = "add_product"
      * )
      *
-     * @ParamConverter("cartProduct",             converter="fos_rest.request_body", class="App\Entity\CartProduct")
+     * @ParamConverter("cartProduct",             converter="fos_rest.request_body", class="App\Model\CartProduct")
      * @ViewAnnotation(serializerGroups={"cart"}, statusCode=Response::HTTP_OK)
      *
      * @param ConstraintViolationListInterface $validationErrors
@@ -75,9 +75,10 @@ class CartController extends FOSRestController
         if (count($validationErrors) > 0) {
             return $this->view([], Response::HTTP_BAD_REQUEST);
         }
-        $idCart = $cartManager->createNewCart();
-        $cartManager->createCartProduct($idCart);
-        $cartProduct->setId($idCart);
+        $cart = $cartManager->createNewCart();
+
+        $cartManager->createCartProduct($cart);
+        $cartProduct->setId($cart->getId());
         $cartManager->addProduct($cartProduct);
 
         return $this->view(['OK']);
