@@ -142,4 +142,15 @@ class Employee
 
         return $this;
     }
+
+    /**
+     * @param int $id
+     * @return Employee
+     */
+    public function setId(int $id): Employee
+    {
+        $this->id = $id;
+        return $this;
+    }
+
 }

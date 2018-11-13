@@ -69,15 +69,6 @@ class Cart
         $this->updated_at = new \DateTime();
     }
 
-    public static function map($c): Order
-    {
-        $order = new Order();
-        $order->setReference('refere');
-        $order->setCurrentState(1);
-
-        return $order;
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -186,7 +177,4 @@ class Cart
         return $this;
     }
 
-    public static function getCart()
-    {
-    }
 }

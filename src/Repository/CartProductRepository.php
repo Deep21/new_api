@@ -44,7 +44,6 @@ class CartProductRepository extends ServiceEntityRepository
             $cartProduct->setQuantity($cartProductModel->getQuantity());
             $cartProduct->setProduct($product);
             $cartProduct->setProductAttribute($productAttribute);
-            $cartProduct->setCreatedAt(new \DateTime());
             $em->persist($cartProduct);
             $em->flush();
 

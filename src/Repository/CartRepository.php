@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Cart;
+use App\Entity\Employee;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -35,14 +36,19 @@ class CartRepository extends ServiceEntityRepository
     /**
      * @param Cart $cart
      *
+     * @return Cart
      * @throws \Doctrine\ORM\ORMException
      */
     public function create(Cart $cart)
     {
         $em = $this->getEntityManager();
+        $employee = $em->getReference(Employee::class, 2);
+        $cart->setEmployee($employee);
         $em->persist($cart);
 
         $em->flush();
+
+        return $cart;
     }
 
     /**

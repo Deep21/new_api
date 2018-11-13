@@ -9,6 +9,8 @@
 namespace App\Service;
 
 use App\Entity\Cart;
+use App\Entity\Employee;
+use App\Entity\User;
 use App\Event\CartEvent;
 use App\Model\CartProduct;
 use App\Repository\CartProductRepository;
@@ -83,7 +85,6 @@ class CartManager
 
     }
 
-
     /**
      * @return Cart
      */
@@ -91,8 +92,13 @@ class CartManager
     {
         $cart = new Cart();
         try {
+
+            $userToken = $this->manager->getToken()->getUser();
+            $employee = new Employee();
+            $employee->setId(2);
+            $cart->setEmployee($employee);
             $this->cartRepository->create($cart);
-            $this->cartRepository->setEmployee($this->manager->getToken()->getUser()->getId(), $cart->getId());
+
         } catch (ORMException $e) {
         }
 

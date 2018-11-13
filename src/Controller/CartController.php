@@ -76,12 +76,9 @@ class CartController extends FOSRestController
             return $this->view([], Response::HTTP_BAD_REQUEST);
         }
         $cart = $cartManager->createNewCart();
-
         $cartManager->createCartProduct($cart, $cartProduct);
-        $cartProduct->setId($cart->getId());
-        $cartManager->addProduct($cartProduct);
 
-        return $this->view(['OK']);
+        return $this->view(['id'=>$cart->getId()]);
     }
 
     /**
@@ -126,6 +123,7 @@ class CartController extends FOSRestController
         }
 
         $filter = FilterFactory::create($request)->injectRepository($cartManager);
+        dd($filter)
         $filter->apply($cartProduct);
 
 
