@@ -40,7 +40,7 @@ class CartEvent extends Event
      *
      * @param CartProduct $cartProduct
      */
-    public function __construct(CartProduct $cartProduct)
+    public function __construct(CartProduct $cartProduct = null)
     {
         $this->cartProduct = $cartProduct;
     }

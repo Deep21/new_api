@@ -9,15 +9,24 @@
 namespace App\Service;
 
 
+use App\Event\CartEvent;
 use App\Model\CartProduct;
+use App\Repository\CartProductRepository;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UpFilter implements FilterInterface
 {
     /**
-     * @var EntityRepository $entityRepository
+     * @var CartProductRepository $entityRepository
      */
     private $entityRepository;
+    /**
+     * @var EventDispatcher $dispatcher
+     */
+    private $dispatcher;
 
     /**
      * UpFilter constructor.
@@ -37,15 +46,23 @@ class UpFilter implements FilterInterface
     }
 
     /**
+     * @param EventDispatcherInterface $dispatcher
+     * @return FilterInterface
+     */
+    public function setEventDispatcher(EventDispatcherInterface $dispatcher) : FilterInterface
+    {
+        $this->dispatcher = $dispatcher;
+        return $this;
+    }
+
+    /**
      * @param CartProduct $cartProduct
      */
     public function apply(CartProduct $cartProduct) : void
     {
-        $this->cartManager->decreaseQty($cartProduct);
+        $this->dispatcher->dispatch(CartEvent::CART_INCREASE, new CartEvent());
+//        $cartProduct = $this->entityRepository->getQuantity($cartProduct);
+//        $this->entityRepository->upQty($cartProduct);
     }
 
-    public function setModel()
-    {
-        // TODO: Implement setModel() method.
-    }
 }

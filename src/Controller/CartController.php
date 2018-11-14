@@ -11,6 +11,7 @@ use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\Controller\Annotations\View as ViewAnnotation;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -112,19 +113,24 @@ class CartController extends FOSRestController
      * @param                                        ConstraintViolationListInterface $validationErrors
      * @param                                        CartProduct $cartProduct
      * @param                                        Request $request
-     * @param CartProductRepository $cartManager
+     * @param CartProductRepository $cartProductRepository
+     * @param EventDispatcherInterface $dispatcher
      * @return                                       View
      * @ViewAnnotation(statusCode=Response::HTTP_OK)
      */
-    public function editProductAction(ConstraintViolationListInterface $validationErrors, CartProduct $cartProduct, Request $request, CartProductRepository $cartManager): View
+    public function editProductAction(
+        ConstraintViolationListInterface $validationErrors,
+        CartProduct $cartProduct,
+        Request $request, CartProductRepository $cartProductRepository, EventDispatcherInterface $dispatcher): View
     {
         if (count($validationErrors) > 0) {
             return $this->view([], Response::HTTP_BAD_REQUEST);
         }
 
-        $filter = FilterFactory::create($request)->injectRepository($cartManager);
-        dd($filter)
-        $filter->apply($cartProduct);
+          FilterFactory::create($request)
+            ->injectRepository($cartProductRepository)
+            ->setEventDispatcher($dispatcher)
+            ->apply($cartProduct);
 
 
         return $this->view(

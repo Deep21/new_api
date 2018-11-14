@@ -95,16 +95,20 @@ class CartProductRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $id
+     * @param \App\Model\CartProduct $cartProduct
      *
      * @return CartProduct
      */
-    public function getQuantity(int $id)
+    public function getQuantity(\App\Model\CartProduct $cartProduct)
     {
-        $qb = $this->createQueryBuilder('r');
+        $qb = $this->createQueryBuilder('c');
         try {
-            return $qb->andWhere('r.id = :id')
-                ->setParameter('id', $id)
+            return $qb->where('c.id = :id')
+                ->andWhere('c.product = :product')
+                ->andWhere('c.productAttribute = :productAttribute')
+                ->setParameter('product', $cartProduct->getProduct())
+                ->setParameter('productAttribute', $cartProduct->getProductAttribute())
+                ->setParameter('id', $cartProduct->getId())
                 ->getQuery()
                 ->getSingleResult(AbstractQuery::HYDRATE_OBJECT);
         } catch (NoResultException $e) {
@@ -127,6 +131,7 @@ class CartProductRepository extends ServiceEntityRepository
             ->andWhere('c.product = :product')
             ->andWhere('c.productAttribute = :productAttribute')
             ->setParameter('quantity', $cartProduct->getQuantity() + 1)
+            ->setParameter('id', $cartProduct->getId())
             ->setParameter('product', $cartProduct->getProduct()->getId())
             ->setParameter('productAttribute', $cartProduct->getProductAttribute()->getId())
             ->getQuery()

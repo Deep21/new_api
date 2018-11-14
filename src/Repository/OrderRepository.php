@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Model\Cart;
+use App\Entity\Cart;
 use App\Entity\Customer;
 use App\Entity\Order;
 use App\Utils\OrderUtil;

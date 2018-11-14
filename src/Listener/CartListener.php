@@ -42,11 +42,21 @@ class CartListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CartEvent::CART_UPDATE => [
+            CartEvent::CART_INCREASE => [
+                ['isIncreasing'],
+                ['isDecreasing'],
                 ['checkStock'],
-                ['onCartUpdate']
+                ['onCartIncrease']
             ]
         ];
+    }
+
+    public function isDecreasing()
+    {
+    }
+
+    public function isIncreasing()
+    {
     }
 
     /**

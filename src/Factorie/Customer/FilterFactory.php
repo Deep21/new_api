@@ -23,11 +23,14 @@ class FilterFactory implements FilterFactoryInterface
     {
         $filter = null;
         switch ($request->get('action')) {
+
         case 'up':
             $filter = new UpFilter();
             break;
 
         case 'down':
+            $filter = new DownFilter();
+
             break;
 
         case 'custom':
