@@ -31,17 +31,52 @@ class ProductRepository extends ServiceEntityRepository
     {
         $product = null;
         try {
-            $product = $this->createQueryBuilder('p')
-                ->select(['p'])
-                ->where('p.id = :id')
+            $product = $this->createQueryBuilder('product')
+                ->select(['product, product_attribute'])
+                ->where('product.id = :id')
+                ->leftJoin('product.productAttribute', 'product_attribute')
                 ->setParameter('id', $id)
                 ->getQuery()
                 ->getSingleResult();
+
         } catch (NoResultException $e) {
             throw new NotFoundHttpException('Not Found');
         } catch (NonUniqueResultException $e) {
         }
 
         return $product;
+    }
+
+    /**
+     * @param Product $product
+     * @return Product
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function createProduct(Product $product)
+    {
+        $em = $this->getEntityManager();
+        $p = new Product();
+
+        if($product->getManufacturer() != null) {
+            $m = $em->getReference('App:Manufacturer', $product->getManufacturer()->getId());
+            $p->setManufacturer($m);
+        }
+
+        $p->setQuantity($product->getQuantity());
+        $p->setPrice($product->getPrice());
+        $p->setIsActive($product->getIsActive());
+        $p->setEcotax($product->getEcotax());
+        $p->setIsOnSale($product->getIsOnSale());
+        $p->setMinimalQuantity($product->getMinimalQuantity());
+        $p->setWholesalePrice($product->getWholesalePrice());
+        $p->setReference($product->getReference());
+        $p->setUpc($product->getUpc());
+        $p->setIsbn($product->getIsbn());
+        $p->setEan13($product->getEan13());
+        $em->persist($p);
+
+        $em->flush();
+
+        return $p;
     }
 }

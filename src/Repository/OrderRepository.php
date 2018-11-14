@@ -92,14 +92,9 @@ class OrderRepository extends ServiceEntityRepository
      */
     public function updateOrder(\App\Model\Order $order, Order $orderEntity)
     {
-        $qb = $this->createQueryBuilder('o')->update();
-
-        if (null != $order->getCustomer()) {
-            $qb
-                ->set('o.customer', ':customerId')
-                ->setParameter('customerId', $order->getCustomer()->getId());
-        }
-
+        $qb = $this
+            ->createQueryBuilder('o')
+            ->update();
         $qb
             ->set('o.cart', ':cartId')
             ->where('o.id = :orderId')
@@ -107,5 +102,13 @@ class OrderRepository extends ServiceEntityRepository
             ->setParameter('cartId', $order->getCart()->getId())
             ->getQuery()
             ->execute();
+    }
+
+    public function getOrderCollection()
+    {
+        return $this
+            ->createQueryBuilder('order')
+            ->getQuery()
+            ->getArrayResult();
     }
 }

@@ -103,7 +103,8 @@ class CartProductRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('c');
         try {
-            return $qb->where('c.id = :id')
+            return $qb
+                ->where('c.id = :id')
                 ->andWhere('c.product = :product')
                 ->andWhere('c.productAttribute = :productAttribute')
                 ->setParameter('product', $cartProduct->getProduct())
@@ -174,21 +175,24 @@ class CartProductRepository extends ServiceEntityRepository
     /**
      * @param int $id
      *
-     * @return mixed|null
+     * @return CartProduct |null
      */
-    public function getCart(int $id)
+    public function getCartDetail(int $id)
     {
         try {
-            return $this->createQueryBuilder('c')
-                ->andWhere('c.id = :id')
-                ->setParameter('id', $id)
+            return $this->_em
+                ->getRepository('App:CartProduct')
+                ->createQueryBuilder('cp')
+                ->select(['cp', 'pr', 'pa', 'cart'])
+                ->leftJoin('cp.cart', 'cart')
+                ->leftJoin('cp.productAttribute', 'pa')
+                ->leftJoin('cp.product', 'pr')
+                ->where('cp.id = :id')
+                ->setParameter(':id', (int)$id)
                 ->getQuery()
-                ->getSingleResult();
+                ->getSingleResult(AbstractQuery::HYDRATE_SCALAR);
         } catch (NoResultException $e) {
-            throw new NotFoundHttpException('Not found');
         } catch (NonUniqueResultException $e) {
         }
-
-        return null;
     }
 }

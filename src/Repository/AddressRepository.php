@@ -32,12 +32,14 @@ class AddressRepository extends ServiceEntityRepository
         $address = null;
 
         try {
-            $address = $this->createQueryBuilder('address')
+            $address = $this
+                ->createQueryBuilder('address')
                 ->select(['address'])
                 ->where('address.id = :id')
                 ->setParameter('id', $id)
                 ->getQuery()
                 ->getSingleResult();
+
         } catch (NoResultException $e) {
             throw new NotFoundHttpException('Not Found');
         } catch (NonUniqueResultException $e) {
@@ -46,7 +48,33 @@ class AddressRepository extends ServiceEntityRepository
         return $address;
     }
 
-    public function getFullAddress()
+    public function getAddressList()
     {
+        return $this->createQueryBuilder('address')
+            ->getQuery()
+            ->getArrayResult();
+
+    }
+
+    public function update(Address $addressModel)
+    {
+        $address = $this->findById($addressModel->getId());
+
+        $address->setCompany($addressModel->getCompany());
+        $address->setAlias($addressModel->getAlias());
+        $address->setAddress1($addressModel->getAddress1());
+        $address->setAddress2($addressModel->getAddress2());
+        $address->setLastname($addressModel->getLastname());
+        $address->setFirstname($addressModel->getFirstname());
+        $address->setCity($addressModel->getCity());
+        $address->setPostcode($addressModel->getPostcode());
+        $address->setPhone($addressModel->getPhone());
+        $address->setPhoneMobile($addressModel->getPhoneMobile());
+        $address->setDni($addressModel->getDni());
+        $address->setDeleted($addressModel->getDeleted());
+
+
+        $this->_em->flush();
+
     }
 }

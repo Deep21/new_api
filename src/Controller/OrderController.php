@@ -43,7 +43,10 @@ class OrderController extends FOSRestController
      */
     public function getOrderCollectionAction(): View
     {
-        $orders = $this->getDoctrine()->getRepository(Order::class)->findAll();
+        $orders = $this
+            ->getDoctrine()
+            ->getRepository(Order::class)
+            ->getOrderCollection();
 
         return $this->view($orders);
     }

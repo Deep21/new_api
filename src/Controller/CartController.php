@@ -3,15 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Cart;
-use App\Factorie\Customer\FilterFactory;
+use App\Event\CartEvent;
 use App\Model\CartProduct;
-use App\Repository\CartProductRepository;
 use App\Service\CartManager;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query\Expr\Join;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\Controller\Annotations\View as ViewAnnotation;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,7 +34,7 @@ class CartController extends FOSRestController
         $carts = $this
             ->getDoctrine()
             ->getRepository(Cart::class)
-            ->getCarts();
+            ->getCartCollection();
 
         return $this->view($carts);
     }
@@ -44,15 +44,18 @@ class CartController extends FOSRestController
      *     path="/cart/{cart}",
      *     name = "get_cart"
      * )
-     * @ParamConverter("cart",                    class="App\Entity\Cart", options={"repository_method" = "getCartById"})
-     * @ViewAnnotation(serializerGroups={"cart"}, statusCode=Response::HTTP_OK)
-     *
-     * @param Cart $cart
-     *
+     * @ViewAnnotation(statusCode=Response::HTTP_OK)
+     * @param Request $request
      * @return View
      */
-    public function getCartAction(Cart $cart): View
+    public function getCartAction(Request $request): View
     {
+        $cartId = $request->get('cart');
+        $cart   = $this
+                ->getDoctrine()
+                ->getRepository("App:CartProduct")
+                ->getCartDetail($cartId);
+
         return $this->view($cart);
     }
 
@@ -109,34 +112,28 @@ class CartController extends FOSRestController
      *     path="/cart",
      *     name = "update_cart"
      * )
-     * @ParamConverter("cartProduct",                converter="fos_rest.request_body", class="App\Model\CartProduct")
-     * @param                                        ConstraintViolationListInterface $validationErrors
-     * @param                                        CartProduct $cartProduct
-     * @param                                        Request $request
-     * @param CartProductRepository $cartProductRepository
-     * @param EventDispatcherInterface $dispatcher
-     * @return                                       View
-     * @ViewAnnotation(statusCode=Response::HTTP_OK)
+     * @ParamConverter("cartProduct", converter="fos_rest.request_body", class="App\Model\CartProduct")
+     * @param ConstraintViolationListInterface $validationErrors
+     * @param CartProduct $cartProduct
+     * @param Request $request
+     * @return View* @ViewAnnotation(statusCode=Response::HTTP_OK)
      */
-    public function editProductAction(
-        ConstraintViolationListInterface $validationErrors,
-        CartProduct $cartProduct,
-        Request $request, CartProductRepository $cartProductRepository, EventDispatcherInterface $dispatcher): View
+    public function editProductAction(ConstraintViolationListInterface $validationErrors, CartProduct $cartProduct, Request $request): View
     {
         if (count($validationErrors) > 0) {
             return $this->view([], Response::HTTP_BAD_REQUEST);
         }
+        if($request->get('action') === 'up') {
+            $this->get('event_dispatcher')->dispatch(CartEvent::CART_INCREASE, new CartEvent($cartProduct));
 
-          FilterFactory::create($request)
-            ->injectRepository($cartProductRepository)
-            ->setEventDispatcher($dispatcher)
-            ->apply($cartProduct);
-
+        }else if($request->get('action') === 'down'){
+            $this->get('event_dispatcher')->dispatch(CartEvent::CART_DECREASE);
+        }
 
         return $this->view(
             [
                 'message' => 'updated',
-                'id' => $cartProduct->getId(),
+                'id' => 1,
             ]
         );
     }

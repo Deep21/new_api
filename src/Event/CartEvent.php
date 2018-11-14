@@ -8,7 +8,7 @@
 
 namespace App\Event;
 
-use App\Entity\CartProduct;
+use App\Model\CartProduct;
 use Symfony\Component\EventDispatcher\Event;
 
 class CartEvent extends Event
@@ -22,7 +22,7 @@ class CartEvent extends Event
      * @var string
      */
     const CART_DECREASE = 'cart.decrease';
-    const CART_UPDATE = 'cart.onupdate';
+    const CART_UPDATE   = 'cart.onupdate';
     const CART_INCREASE = 'cart.increase';
 
     /**
@@ -40,7 +40,7 @@ class CartEvent extends Event
      *
      * @param CartProduct $cartProduct
      */
-    public function __construct(CartProduct $cartProduct = null)
+    public function __construct(CartProduct $cartProduct)
     {
         $this->cartProduct = $cartProduct;
     }

@@ -22,7 +22,7 @@ class Address
      * @ORM\Column(type="integer",          nullable=false, options={"unsigned"=true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $id;
 
@@ -55,7 +55,7 @@ class Address
      * @var string
      *
      * @ORM\Column(name="alias",      type="string", length=32, nullable=false)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $alias;
 
@@ -63,7 +63,7 @@ class Address
      * @var string|null
      *
      * @ORM\Column(name="company", type="string", length=255, nullable=true)
-     * @Groups({"list",            "address_list_view"})
+     * @Groups({"list",            "detail"})
      */
     private $company;
 
@@ -71,7 +71,7 @@ class Address
      * @var string
      *
      * @ORM\Column(name="lastname",   type="string", length=255, nullable=false)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $lastname;
 
@@ -79,7 +79,7 @@ class Address
      * @var string
      *
      * @ORM\Column(name="firstname",  type="string", length=255, nullable=false)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $firstname;
 
@@ -87,73 +87,73 @@ class Address
      * @var string
      *
      * @ORM\Column(name="address1",   type="string", length=128, nullable=false)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $address1;
 
     /**
      * @ORM\Column(name="address2",   type="string", length=128, nullable=true)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $address2;
 
     /**
      * @ORM\Column(name="postcode",   type="string", length=12)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $postcode;
 
     /**
      * @ORM\Column(name="city",       type="string", length=64)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $city;
 
     /**
      * @ORM\Column(name="other",      type="string", length=255, nullable=true)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $other;
 
     /**
      * @ORM\Column(name="phone",      type="string", length=32)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $phone;
 
     /**
      * @ORM\Column(name="phone_mobile", type="string", length=32)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $phone_mobile;
 
     /**
      * @ORM\Column(name="vat_number", type="string", length=32, nullable=true)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $vat_number;
 
     /**
      * @ORM\Column(name="dni",        type="string", length=16, nullable=true)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $dni;
 
     /**
      * @ORM\Column(name="deleted",    type="boolean", nullable=true)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $deleted;
 
     /**
      * @ORM\Column(name="date_add",   type="datetime", nullable=false)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $date_add;
 
     /**
      * @ORM\Column(name="date_upd",   type="datetime", nullable=false)
-     * @Groups({"address_list_view"})
+     * @Groups({"detail"})
      */
     private $date_upd;
 
@@ -284,13 +284,13 @@ class Address
     /**
      * @return Customer
      */
-    public function getCustomer()
+    public function getCustomer() : Customer
     {
         return $this->customer;
     }
 
     /**
-     * @param mixed $customer
+     * @param Customer $customer
      */
     public function setCustomer(Customer $customer): void
     {

@@ -44,12 +44,6 @@ class Customer
     private $shopgroup;
 
     /**
-     * @var                                            Collection|Cart[]
-     * @ORM\OneToMany(targetEntity=CartProduct::class, cascade={"persist", "remove"}, mappedBy="customer")
-     */
-    private $cart;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="customer")
      */
     private $shop;
@@ -395,26 +389,7 @@ class Customer
         return $this->cart;
     }
 
-    public function addCart(Cart $cart): self
-    {
-        if (!$this->cart->contains($cart)) {
-            $this->cart[] = $cart;
-            $cart->setCustomer($this);
-        }
 
-        return $this;
-    }
 
-    public function removeCart(Cart $cart): self
-    {
-        if ($this->cart->contains($cart)) {
-            $this->cart->removeElement($cart);
-            // set the owning side to null (unless already changed)
-            if ($cart->getCustomer() === $this) {
-                $cart->setCustomer(null);
-            }
-        }
 
-        return $this;
-    }
 }

@@ -12,37 +12,44 @@ class CartProduct
 {
     /**
      * @ORM\Id()
+     * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"cart"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="cartProduct")
+     * @var Product
      */
     private $product;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Cart::class, inversedBy="cartProduct")
+     * @var Cart
+     */
+    private $cart;
+
+    /**
      * @ORM\ManyToOne(targetEntity=ProductAttribute::class, inversedBy="cartProduct")
-     * @Groups({"product"})
+     * @var ProductAttribute
      */
     private $productAttribute;
 
     /**
      * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="cartProduct")
-     * @Groups({"product"})
+     * @var Shop
      */
     private $shop;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"cart"})
+     * @var integer $quantity
      */
     private $quantity;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"cart"})
+     * @var \DateTime $created_at
      */
     private $created_at;
 
@@ -58,14 +65,6 @@ class CartProduct
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @param mixed $id
-     */
-    public function setId($id): void
-    {
-        $this->id = $id;
     }
 
     public function getQuantity(): ?int
@@ -92,6 +91,11 @@ class CartProduct
         return $this;
     }
 
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
     public function setProduct(?Product $product): self
     {
         $this->product = $product;
@@ -99,9 +103,14 @@ class CartProduct
         return $this;
     }
 
-    public function setShop(?Shop $shop): self
+    public function getCart(): ?Cart
     {
-        $this->shop = $shop;
+        return $this->cart;
+    }
+
+    public function setCart(?Cart $cart): self
+    {
+        $this->cart = $cart;
 
         return $this;
     }
@@ -118,13 +127,17 @@ class CartProduct
         return $this;
     }
 
-    public function getProduct(): ?Product
-    {
-        return $this->product;
-    }
-
     public function getShop(): ?Shop
     {
         return $this->shop;
     }
+
+    public function setShop(?Shop $shop): self
+    {
+        $this->shop = $shop;
+
+        return $this;
+    }
+
+
 }

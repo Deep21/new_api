@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use Doctrine\ORM\ORMException;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations\View as ViewAnnotation;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,10 +21,8 @@ class ProductController extends FOSRestController
      *     path="/product/{product}",
      *     name = "get_product"
      * )
-     *
-     * @ParamConverter("product", class="App\Entity\Product", options={"repository_method" = "findProductBy"})
-     *
-     * @param                                        Product $product
+     * @Entity("product", expr="repository.findProductBy(product)", class="App\Entity\Product")
+     * @param Product $product
      * @ViewAnnotation(serializerGroups={"product"}, statusCode=Response::HTTP_OK)
      *
      * @return View
@@ -38,7 +38,7 @@ class ProductController extends FOSRestController
      *     name = "new_product"
      * )
      *
-     * @ParamConverter("product",                    converter="fos_rest.request_body", class="App\Entity\Product")
+     * @ParamConverter("product", converter="fos_rest.request_body", class="App\Entity\Product")
      * @ViewAnnotation(serializerGroups={"product"}, statusCode=Response::HTTP_OK)
      *
      * @param ConstraintViolationListInterface $validationErrors
@@ -51,10 +51,21 @@ class ProductController extends FOSRestController
         if (count($validationErrors) > 0) {
             return $this->view([], Response::HTTP_BAD_REQUEST);
         }
+        $p = null;
 
-        $em = $this->getDoctrine()->getManager();
-        dump($product);
-        exit;
+        try {
+
+            $p = $this
+                ->getDoctrine()
+                ->getRepository('App:Product')
+                ->createProduct($product);
+
+        } catch (ORMException $e) {
+
+        }
+
+        return $this->view($p->getId());
+
     }
 
     /**
@@ -63,8 +74,7 @@ class ProductController extends FOSRestController
      *     name = "remove_product"
      * )
      *
-     * @ParamConverter("product", class="App\Entity\Product", options={"repository_method" = "getProductById"})
-     *
+     * @Entity("product", expr="repository.findProductBy(product)", class="App\Entity\Product")
      * @param                                        Product $product
      * @ViewAnnotation(serializerGroups={"product"}, statusCode=Response::HTTP_OK)
      *

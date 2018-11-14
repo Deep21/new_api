@@ -29,11 +29,6 @@ class CartListener implements EventSubscriberInterface
         $this->cartProductRepository = $cartProductRepository;
     }
 
-    public function checkStock(CartEvent $event)
-    {
-        dump(__LINE__);
-    }
-
     /**
      * Returns an array of events this subscriber wants to listen to.
      *
@@ -41,22 +36,9 @@ class CartListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
-        return [
-            CartEvent::CART_INCREASE => [
-                ['isIncreasing'],
-                ['isDecreasing'],
-                ['checkStock'],
-                ['onCartIncrease']
+        return [CartEvent::CART_INCREASE => [['onCartIncrease', 1]
             ]
         ];
-    }
-
-    public function isDecreasing()
-    {
-    }
-
-    public function isIncreasing()
-    {
     }
 
     /**
@@ -66,21 +48,22 @@ class CartListener implements EventSubscriberInterface
     {
         if (1 === $event->getCart()->getQuantity()) {
             $this->cartProductRepository->deleteCart($event->getCart()->getId());
-
             return;
         }
 
         $this->cartProductRepository->downQty($event->getCart());
     }
 
-    public function onCartIncrease()
+    public function onCartIncrease(CartEvent $event)
     {
+        echo '1';
+        exit;
 
     }
 
     public function onCartUpdate(CartEvent $event)
     {
-        dump(__LINE__);
+
 
     }
 

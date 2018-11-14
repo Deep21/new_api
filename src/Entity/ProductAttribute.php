@@ -20,29 +20,34 @@ class ProductAttribute
     private $id;
 
     /**
-     * @var                                            Collection|CartProduct[]
-     * @ORM\OneToMany(targetEntity=CartProduct::class, cascade={"persist", "remove"}, mappedBy="productAttribute")
-     * @Groups({"product"})
+     * @ORM\OneToMany(targetEntity=CartProduct::class, mappedBy="product")
+     * @var Collection|\App\Model\CartProduct[]
+     * @var CartProduct
      */
     private $cartProduct;
 
     /**
-     * @ORM\ManyToOne(targetEntity=CartProduct::class, inversedBy="productAttribute")
+     * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="productAttribute")
+     * @var Product
      */
     private $product;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2)
+     * @var float $price
      */
     private $price;
 
     /**
+     * @var float $ecotax
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $ecotax;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2)
+     * @var double $wholesale_price
      */
     private $wholesale_price;
 
@@ -56,21 +61,21 @@ class ProductAttribute
         return $this->id;
     }
 
-    public function getPrice()
+    public function getPrice() : float
     {
         return $this->price;
     }
 
-    public function setPrice($price): self
+    public function setPrice(float $price): self
     {
         $this->price = $price;
 
         return $this;
     }
 
-    public function getEcotax()
+    public function getEcotax() : float
     {
-        return $this->ecotax;
+        return (float)$this->ecotax;
     }
 
     public function setEcotax($ecotax): self

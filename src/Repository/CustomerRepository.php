@@ -79,9 +79,10 @@ class CustomerRepository extends ServiceEntityRepository
     /**
      * @return array
      */
-    public function getCustomers()
+    public function getCustomerCollection()
     {
-        $c = $this->createQueryBuilder('c')
+        $c = $this
+            ->createQueryBuilder('c')
             ->select(['c, o'])
             ->leftJoin('c.order', 'o')
             ->getQuery()

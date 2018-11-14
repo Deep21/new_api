@@ -10,6 +10,7 @@ use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\Controller\Annotations\View as ViewAnnotation;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,9 +24,7 @@ class CustomerController extends FOSRestController
      *     path="/customer/{customer}",
      *     name = "get_customer"
      * )
-     *
-     * @ParamConverter("customer", class="App\Entity\Customer", options={"repository_method" = "getCustomerById"})
-     *
+     * @Entity("customer", expr="repository.getCustomerById(customer)", class="App\Entity\Customer")
      * @param                                     Customer $customer
      * @ViewAnnotation(serializerGroups={"list"}, statusCode=Response::HTTP_OK)
      *
@@ -42,20 +41,16 @@ class CustomerController extends FOSRestController
      *     name = "get_customer_collection"
      * )
      * @ViewAnnotation(statusCode=Response::HTTP_OK)
-     *
-     * @param CustomerManager $manager
-     *
      * @IsGranted("ROLE_USER")
-     *
      * @return View
      */
-    public function getCustomerCollectionAction(CustomerManager $manager): View
+    public function getCustomerCollectionAction(): View
     {
         //        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $customers = $this
             ->getDoctrine()
             ->getRepository(Customer::class)
-            ->getCustomers();
+            ->getCustomerCollection();
 
         return $this->view($customers);
     }
@@ -65,16 +60,15 @@ class CustomerController extends FOSRestController
      *     path="/customer/{customer}/address",
      *     name = "get_customer_address"
      * )
-     *
      * @param                                     AddressManager $addressManager
      * @param                                     Request        $request
      * @ViewAnnotation(serializerGroups={"list"}, statusCode=Response::HTTP_OK)
-     *
      * @return View
      */
     public function getCustomerAddressAction(AddressManager $addressManager, Request $request): View
     {
-        $address = $addressManager->getAddressByClient($request->get('customer'));
+        $address = $addressManager
+            ->getAddressByClient($request->get('customer'));
 
         return $this->view($address);
     }
@@ -165,12 +159,9 @@ class CustomerController extends FOSRestController
      *     path="/customer/{customer}",
      *     name = "remove_customer"
      * )
-     *
      * @ViewAnnotation(serializerGroups={"list"}, statusCode=Response::HTTP_NO_CONTENT)
-     * @ParamConverter("customer",                class="App\Entity\Customer", options={"repository_method" = "getCustomerById"})
-     *
+     * @Entity("customer", expr="repository.getCustomerById(customer)", class="App\Entity\Customer")
      * @param Customer $customer
-     *
      * @return View
      */
     public function removeCustomerAction(Customer $customer): View

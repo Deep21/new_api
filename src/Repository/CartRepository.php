@@ -26,11 +26,14 @@ class CartRepository extends ServiceEntityRepository
     /**
      * @return array
      */
-    public function getCarts(): array
+    public function getCartCollection(): array
     {
-        return $this->createQueryBuilder('cart')
-            ->getQuery()
-            ->execute();
+        return $this
+            ->createQueryBuilder('cart')
+                ->select(['cart'])
+                ->leftJoin('cart', 'o')
+                ->getQuery()
+                ->getArrayResult();
     }
 
     /**
@@ -86,4 +89,5 @@ class CartRepository extends ServiceEntityRepository
         } catch (NonUniqueResultException $e) {
         }
     }
+
 }

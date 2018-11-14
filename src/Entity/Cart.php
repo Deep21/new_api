@@ -22,31 +22,31 @@ class Cart
     private $id;
 
     /**
-     * @var                                      Collection|Shop[]
      * @ORM\OneToMany(targetEntity=Order::class, cascade={"persist", "remove"}, mappedBy="cart")
+     * @var Collection|Order[]
      */
     private $order;
 
     /**
      * @ORM\ManyToOne(targetEntity=Employee::class, cascade={"persist", "remove"}, inversedBy="cart")
+     * @var Employee
      */
     private $employee;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Customer::class, inversedBy="cart")
+     * @ORM\OneToMany(targetEntity=CartProduct::class, cascade={"persist", "remove"}, mappedBy="cart")
+     * @var Collection|\App\Model\CartProduct[]
      */
-    private $customer;
+    private $cartProduct;
 
     /**
      * @ORM\Column(type="datetime")
-     *
      * @var \DateTimeInterface
      */
     private $created_at;
 
     /**
      * @ORM\Column(type="datetime")
-     *
      * @var \DateTimeInterface
      */
     private $updated_at;
@@ -58,7 +58,6 @@ class Cart
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
-     * @Groups({"list"})
      */
     private $is_gift;
 
@@ -67,6 +66,7 @@ class Cart
         $this->order = new ArrayCollection();
         $this->created_at = new \DateTime();
         $this->updated_at = new \DateTime();
+        $this->cartProduct = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -165,16 +165,37 @@ class Cart
         return $this;
     }
 
-    public function getCustomer(): ?Customer
-    {
-        return $this->customer;
-    }
 
-    public function setCustomer(?Customer $customer): self
+
+    public function addCartProduct(CartProduct $cartProduct): self
     {
-        $this->customer = $customer;
+        if (!$this->cartProduct->contains($cartProduct)) {
+            $this->cartProduct[] = $cartProduct;
+            $cartProduct->setCart($this);
+        }
 
         return $this;
+    }
+
+    public function removeCartProduct(CartProduct $cartProduct): self
+    {
+        if ($this->cartProduct->contains($cartProduct)) {
+            $this->cartProduct->removeElement($cartProduct);
+            // set the owning side to null (unless already changed)
+            if ($cartProduct->getCart() === $this) {
+                $cartProduct->setCart(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CartProduct[]
+     */
+    public function getCartProduct(): Collection
+    {
+        return $this->cartProduct;
     }
 
 }

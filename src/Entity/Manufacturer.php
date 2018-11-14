@@ -23,12 +23,12 @@ class Manufacturer
     private $id;
 
     /**
-     * @var                                            Collection|Product[]
+     * @var Collection|Product[]
      * @ORM\OneToMany(targetEntity=CartProduct::class, cascade={"persist", "remove"}, mappedBy="manufacturer")
      */
     private $product;
     /**
-     * @var                                        Collection|Address[]
+     * @var Collection|Address[]
      * @ORM\OneToMany(targetEntity=Address::class, cascade={"persist", "remove"}, mappedBy="manufacturer")
      */
     private $address;

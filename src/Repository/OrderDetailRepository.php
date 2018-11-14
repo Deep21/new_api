@@ -48,51 +48,5 @@ class OrderDetailRepository extends ServiceEntityRepository
 
     }
 
-    /**
-     * @throws ORMException
-     */
-    public function t()
-    {
-        $em = $this->getEntityManager();
-        $order = $em->getReference(Order::class,300);
-        $detail = new OrderDetail();
-        $order->setReference('t');
-        $order->setCurrentState(1);
-        $detail->setProductName("TEST");
-        $detail->setProductQuantity(2);
 
-        $detail->setOrder($order);
-        $em->persist($detail);
-        $em->flush();
-    }
-
-
-    //    /**
-    //     * @return OrderDetail[] Returns an array of OrderDetail objects
-    //     */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('o.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?OrderDetail
-    {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -30,50 +30,55 @@ class Product
     /**
      * @ORM\OneToMany(targetEntity=CartProduct::class, mappedBy="product")
      * @Groups({"product"})
-     *
      * @var Product
-     * */
+     */
     private $cartProduct;
 
     /**
      * @ORM\ManyToOne(targetEntity=Manufacturer::class, inversedBy="product")
      * @Groups({"product"})
      *
-     * @var Collection|Manufacturer[]
+     * @var Manufacturer
      */
     private $manufacturer;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups({"product"})
+     * @var integer $quantity
      */
     private $quantity;
 
     /**
      * @ORM\Column(type="datetime")
+     * @var \DateTime $created_at
      * @Groups({"product"})
      */
     private $created_at;
 
     /**
      * @ORM\Column(type="datetime")
+     * @var \DateTime $updated_at
      * @Groups({"product"})
      */
     private $updated_at;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=0)
+     * @var double $price
      * @Groups({"product"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="integer")
+     * @var integer $minimal_quantity
      */
     private $minimal_quantity;
 
     /**
      * @ORM\Column(type="boolean")
+     * @var boolean $is_active
      */
     private $is_active;
 
@@ -84,11 +89,13 @@ class Product
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=0)
+     * @var double $wholesale_price
      */
     private $wholesale_price;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=0)
+     * @var float $ecotax
      */
     private $ecotax;
 
@@ -109,6 +116,7 @@ class Product
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @var boolean $is_on_sale
      */
     private $is_on_sale;
 
@@ -117,6 +125,8 @@ class Product
         $this->manufacturer = new ArrayCollection();
         $this->productAttribute = new ArrayCollection();
         $this->cartProduct = new ArrayCollection();
+        $this->setCreatedAt(new \DateTime());
+        $this->setUpdatedAt(new \DateTime());
     }
 
     public function getId(): ?int
@@ -251,7 +261,7 @@ class Product
         return $this;
     }
 
-    public function getEcotax()
+    public function getEcotax() : float
     {
         return $this->ecotax;
     }
@@ -311,20 +321,9 @@ class Product
         return $this;
     }
 
-    public function setManufacturer(?Manufacturer $manufacturer): self
-    {
-        $this->manufacturer = $manufacturer;
-
-        return $this;
-    }
-
-    public function getManufacturer(): Collection
-    {
-        return $this->manufacturer;
-    }
 
     /**
-     * @return Collection|Manufacturer[]
+     * @return Collection|CartProduct[]
      */
     public function getCartProduct(): Collection
     {
@@ -353,4 +352,17 @@ class Product
 
         return $this;
     }
+
+    public function getManufacturer(): ?Manufacturer
+    {
+        return $this->manufacturer;
+    }
+
+    public function setManufacturer(?Manufacturer $manufacturer): self
+    {
+        $this->manufacturer = $manufacturer;
+
+        return $this;
+    }
+
 }

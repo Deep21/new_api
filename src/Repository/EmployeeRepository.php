@@ -36,7 +36,6 @@ class EmployeeRepository extends ServiceEntityRepository
     public function findEmployeeBy(int $id)
     {
         $employee = null;
-
         try {
             $employee = $this->createQueryBuilder('employee')
                 ->select(['employee'])
@@ -50,5 +49,16 @@ class EmployeeRepository extends ServiceEntityRepository
         }
 
         return $employee;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEmployeeCollection()
+    {
+        return $this->createQueryBuilder('employee')
+            ->select(['employee'])
+            ->getQuery()
+            ->getArrayResult();
     }
 }
