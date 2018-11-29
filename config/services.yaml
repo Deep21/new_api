@@ -32,8 +32,25 @@ services:
     App\Listener\CustomerSerializerListener:
         tags:
             - { name: jms_serializer.event_subscriber }
+
     App\Listener\AddressSerializerListener:
         tags:
             - { name: jms_serializer.event_subscriber }
 
+    League\OAuth2\Server\AuthorizationServer:
+         arguments:
+              - '@App\Repository\Oauth\ClientRepository'
+              - '@App\Repository\Oauth\AccessTokenRepository'
+              - '@App\Repository\Oauth\ScopeRepository'
+              - '%env(OAUTH2_PRIVATE_KEY)%'
+              - '%env(OAUTH2_ENCRYPTION_KEY)%'
 
+    League\OAuth2\Server\Grant\PasswordGrant:
+        arguments:
+            - '@App\Repository\Oauth\UserRepository'
+            - '@App\Repository\Oauth\RefreshTokenRepository'
+
+    League\OAuth2\Server\ResourceServer:
+        arguments:
+            - '@App\Repository\Oauth\AccessTokenRepository'
+            - '%env(OAUTH2_PUBLIC_KEY)%'

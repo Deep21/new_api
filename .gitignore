@@ -1,3 +1,5 @@
+private.key
+public.key
 .idea/workspace.xml
 ###> symfony/framework-bundle ###
 /.env

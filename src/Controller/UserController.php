@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Service\Oauth\AbstractOauthManager;
+use App\Service\Oauth\ResourceServer;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\Controller\Annotations\View as ViewAnnotation;
 use FOS\RestBundle\View\View;
+use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\Grant\PasswordGrant;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,6 +19,27 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class UserController extends AbstractController
 {
+
+    /**
+     * @var AuthorizationServer
+     */
+    private $authorizationServer;
+    /**
+     * @var PasswordGrant
+     */
+    private $grant;
+
+    /**
+     * UserController constructor.
+     * @param AuthorizationServer $authorizationServer
+     * @param PasswordGrant $grant
+     */
+    public function __construct(AuthorizationServer $authorizationServer, PasswordGrant $grant)
+    {
+        $this->authorizationServer = $authorizationServer;
+        $this->grant = $grant;
+    }
+
     /**
      * @Annotations\Get(
      *     path="/login",
@@ -26,7 +51,9 @@ class UserController extends AbstractController
      */
     public function loginAction(): View
     {
-        die('f');
+        dump($this->authorizationServer);
+        dump($this->grant);
+        die("ef");
     }
 
     /**
