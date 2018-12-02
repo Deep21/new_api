@@ -45,5 +45,4 @@ class Cart
     {
         return $this->cart_product;
     }
-
 }

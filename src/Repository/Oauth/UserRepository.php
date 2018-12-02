@@ -9,6 +9,7 @@
 
 namespace App\Repository\Oauth;
 
+use App\Entity\Oauth\UserEntity;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 

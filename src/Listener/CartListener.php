@@ -75,14 +75,10 @@ class CartListener implements EventSubscriberInterface
 
     public function onCartIncrease()
     {
-
     }
 
     public function onCartUpdate(CartEvent $event)
     {
         dump(__LINE__);
-
     }
-
-
 }

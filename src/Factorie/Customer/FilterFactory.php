@@ -39,5 +39,4 @@ class FilterFactory implements FilterFactoryInterface
 
         return $filter;
     }
-
 }

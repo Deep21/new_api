@@ -1,16 +1,16 @@
 <?php
 /**
- * @author      Alex Bilbie <hello@alexbilbie.com>
- * @copyright   Copyright (c) Alex Bilbie
- * @license     http://mit-license.org/
- *
- * @link        https://github.com/thephpleague/oauth2-server
+ * Created by PhpStorm.
+ * User: deeptha
+ * Date: 02/12/18
+ * Time: 11:07
  */
 
 namespace App\Repository\Oauth;
 
+
+use App\Entity\Oauth\ClientEntity;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
-use OAuth2ServerExamples\Entities\ClientEntity;
 
 class ClientRepository implements ClientRepositoryInterface
 {
@@ -32,7 +32,6 @@ class ClientRepository implements ClientRepositoryInterface
         if (array_key_exists($clientIdentifier, $clients) === false) {
             return;
         }
-
         if (
             $mustValidateSecret === true
             && $clients[$clientIdentifier]['is_confidential'] === true

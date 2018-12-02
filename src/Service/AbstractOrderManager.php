@@ -50,7 +50,6 @@ abstract class AbstractOrderManager
     public function createNewOrder(\App\Model\Order $orderClient)
     {
         try {
-
             $id = $this->repo->createOrder()->getId();
             $orderClient->setId($id);
 

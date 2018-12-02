@@ -152,5 +152,4 @@ class Employee
         $this->id = $id;
         return $this;
     }
-
 }

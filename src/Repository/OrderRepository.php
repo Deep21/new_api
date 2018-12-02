@@ -74,7 +74,7 @@ class OrderRepository extends ServiceEntityRepository
         $order->setCurrentState(1);
         $order->setCart($cart);
 
-        if($model->getCustomer() !=null) {
+        if ($model->getCustomer() !=null) {
             $customer = $em->getReference(Customer::class, $model->getCustomer()->getId());
             $order->setCustomer($customer);
         }

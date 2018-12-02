@@ -9,9 +9,9 @@
 
 namespace App\Repository\Oauth;
 
+use App\Entity\Oauth\RefreshTokenEntity;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
-use OAuth2ServerExamples\Entities\RefreshTokenEntity;
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {

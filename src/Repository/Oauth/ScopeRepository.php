@@ -9,9 +9,10 @@
 
 namespace App\Repository\Oauth;
 
+use App\Entity\Oauth\ScopeEntity;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
-use OAuth2ServerExamples\Entities\ScopeEntity;
+
 
 class ScopeRepository implements ScopeRepositoryInterface
 {
@@ -35,8 +36,7 @@ class ScopeRepository implements ScopeRepositoryInterface
 
         $scope = new ScopeEntity();
         $scope->setIdentifier($scopeIdentifier);
-        var_dump($scope);
-        exit;
+
         return $scope;
     }
 

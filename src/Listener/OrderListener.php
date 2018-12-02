@@ -53,7 +53,6 @@ class OrderListener implements EventSubscriberInterface
 
     public function onOrderInsert(OrderEvent $event)
     {
-
         $event->getOrder()->getCart()->setId(800);
     }
 
@@ -61,6 +60,4 @@ class OrderListener implements EventSubscriberInterface
     {
         echo __CLASS__;
     }
-
-
 }

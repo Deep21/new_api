@@ -44,8 +44,7 @@ class OrderDetailRepository extends ServiceEntityRepository
             $orderDetail->setOrder($order);
             $em->persist($orderDetail);
         }
-            $em->flush();
-
+        $em->flush();
     }
 
     /**
@@ -54,7 +53,7 @@ class OrderDetailRepository extends ServiceEntityRepository
     public function t()
     {
         $em = $this->getEntityManager();
-        $order = $em->getReference(Order::class,300);
+        $order = $em->getReference(Order::class, 300);
         $detail = new OrderDetail();
         $order->setReference('t');
         $order->setCurrentState(1);

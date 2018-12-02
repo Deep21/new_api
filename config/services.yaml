@@ -42,14 +42,12 @@ services:
               - '@App\Repository\Oauth\ClientRepository'
               - '@App\Repository\Oauth\AccessTokenRepository'
               - '@App\Repository\Oauth\ScopeRepository'
-              - '%env(OAUTH2_PRIVATE_KEY)%'
+              - '%kernel.project_dir%%env(OAUTH2_PRIVATE_KEY)%'
               - '%env(OAUTH2_ENCRYPTION_KEY)%'
-
     League\OAuth2\Server\Grant\PasswordGrant:
         arguments:
             - '@App\Repository\Oauth\UserRepository'
             - '@App\Repository\Oauth\RefreshTokenRepository'
-
     League\OAuth2\Server\ResourceServer:
         arguments:
             - '@App\Repository\Oauth\AccessTokenRepository'

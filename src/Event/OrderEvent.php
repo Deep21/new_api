@@ -54,6 +54,4 @@ class OrderEvent extends Event
     {
         $this->order = $order;
     }
-
-
 }
