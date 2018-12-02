@@ -116,5 +116,4 @@ class CartProduct
     {
         $this->product_name = $product_name;
     }
-
 }

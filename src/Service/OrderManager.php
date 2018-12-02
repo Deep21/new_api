@@ -40,11 +40,11 @@ class OrderManager
      * @param OrderRepository $orderRepository
      * @param OrderDetailRepository $detailRepository
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher,
+    public function __construct(
+        EventDispatcherInterface $eventDispatcher,
                                 OrderRepository $orderRepository,
                                 OrderDetailRepository $detailRepository
-    )
-    {
+    ) {
         $this->eventDispatcher  = $eventDispatcher;
         $this->orderRepository  = $orderRepository;
         $this->detailRepository = $detailRepository;
@@ -60,7 +60,6 @@ class OrderManager
         try {
             $order = $this->orderRepository->createOrder($orderModel);
             $this->detailRepository->insertOrderDetail($productsCart, $order);
-
         } catch (ORMException $e) {
             dd($e->getMessage());
         }
@@ -69,5 +68,4 @@ class OrderManager
     public function testOrderMerge()
     {
     }
-
 }

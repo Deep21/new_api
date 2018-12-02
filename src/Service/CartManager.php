@@ -56,7 +56,6 @@ class CartManager
         $this->manager = $storage;
         $this->cartProductRepository = $cartProductRepository;
         $this->eventDispatcher = $eventDispatcher;
-
     }
 
     /**
@@ -82,7 +81,6 @@ class CartManager
      */
     public function updateCart(CartProduct $cartProduct)
     {
-
     }
 
     /**
@@ -92,13 +90,11 @@ class CartManager
     {
         $cart = new Cart();
         try {
-
             $userToken = $this->manager->getToken()->getUser();
             $employee = new Employee();
             $employee->setId(2);
             $cart->setEmployee($employee);
             $this->cartRepository->create($cart);
-
         } catch (ORMException $e) {
         }
 

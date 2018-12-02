@@ -8,7 +8,6 @@
 
 namespace App\Service;
 
-
 use App\Model\CartProduct;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -28,7 +27,4 @@ interface FilterInterface
      * @return FilterInterface
      */
     public function setEventDispatcher(EventDispatcherInterface $dispatcher) : self;
-
-
-
 }

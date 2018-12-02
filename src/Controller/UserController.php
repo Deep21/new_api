@@ -2,15 +2,16 @@
 
 namespace App\Controller;
 
-use App\Service\Oauth\AbstractOauthManager;
-use App\Service\Oauth\ResourceServer;
+
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\Controller\Annotations\View as ViewAnnotation;
 use FOS\RestBundle\View\View;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\PasswordGrant;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Zend\Diactoros\Response as Psr7Response;
 
 /**
  * Class UserController.
@@ -41,19 +42,32 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Annotations\Get(
-     *     path="/login",
-     *     name = "user_login"
+     * @Annotations\Post(
+     *     path="/token",
+     *     name = "get_access_token"
      * )
      * @ViewAnnotation(statusCode=Response::HTTP_OK)
      *
-     * @return View
+     * @param ServerRequestInterface $request
+     * @return Psr7Response
      */
-    public function loginAction(): View
+    public function getAccessTokenAction(ServerRequestInterface $request): ?Psr7Response
     {
-        dump($this->authorizationServer);
-        dump($this->grant);
-        die("ef");
+        $response =  new Psr7Response();
+        try {
+            $this->grant->setRefreshTokenTTL(new \DateInterval('P1M'));
+            $this->authorizationServer->enableGrantType(
+                $this->grant,
+                new \DateInterval('PT1H')
+            );
+            $token = $this->authorizationServer->respondToAccessTokenRequest($request, $response);
+
+
+        } catch (\Exception $e) {
+            dump($e);
+        }
+
+
     }
 
     /**

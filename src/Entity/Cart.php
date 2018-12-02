@@ -176,5 +176,4 @@ class Cart
 
         return $this;
     }
-
 }

@@ -18,7 +18,7 @@ class AddressSerializerListener implements EventSubscriberInterface
     public function onPostSerialize(ObjectEvent $event)
     {
         /**
- * @var Address $object 
+ * @var Address $object
 */
         $object = $event->getObject();
         $object->setDateAdd(new \DateTime());

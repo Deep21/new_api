@@ -121,13 +121,15 @@ class CartController extends FOSRestController
     public function editProductAction(
         ConstraintViolationListInterface $validationErrors,
         CartProduct $cartProduct,
-        Request $request, CartProductRepository $cartProductRepository, EventDispatcherInterface $dispatcher): View
-    {
+        Request $request,
+        CartProductRepository $cartProductRepository,
+        EventDispatcherInterface $dispatcher
+    ): View {
         if (count($validationErrors) > 0) {
             return $this->view([], Response::HTTP_BAD_REQUEST);
         }
 
-          FilterFactory::create($request)
+        FilterFactory::create($request)
             ->injectRepository($cartProductRepository)
             ->setEventDispatcher($dispatcher)
             ->apply($cartProduct);

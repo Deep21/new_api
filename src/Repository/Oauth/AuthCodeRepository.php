@@ -11,7 +11,6 @@ namespace App\Repository\Oauth;
 
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
-use OAuth2ServerExamples\Entities\AuthCodeEntity;
 
 class AuthCodeRepository implements AuthCodeRepositoryInterface
 {

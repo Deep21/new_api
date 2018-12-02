@@ -8,7 +8,6 @@
 
 namespace App\Factorie\Customer;
 
-
 class DownFilter
 {
 

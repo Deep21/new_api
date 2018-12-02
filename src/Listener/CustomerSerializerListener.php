@@ -18,7 +18,7 @@ class CustomerSerializerListener implements EventSubscriberInterface
     public function onPostSerialize(ObjectEvent $event)
     {
         /**
- * @var Customer $object 
+ * @var Customer $object
 */
         $object = $event->getObject();
         $object->setUpdatedAt(new \DateTime());
