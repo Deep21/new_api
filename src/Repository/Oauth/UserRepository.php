@@ -10,11 +10,19 @@
 namespace App\Repository\Oauth;
 
 use App\Entity\Oauth\UserEntity;
+use App\Entity\OauthUsers;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class UserRepository implements UserRepositoryInterface
+class UserRepository extends ServiceEntityRepository implements UserRepositoryInterface
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, OauthUsers::class);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -24,6 +32,7 @@ class UserRepository implements UserRepositoryInterface
         $grantType,
         ClientEntityInterface $clientEntity
     ) {
+
         if ($username === 'alex' && $password === 'whisky') {
             return new UserEntity();
         }

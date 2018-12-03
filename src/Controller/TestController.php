@@ -5,7 +5,6 @@ namespace App\Controller;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,7 +47,7 @@ class TestController extends AbstractController
             $this->passwordGrant->setRefreshTokenTTL(new \DateInterval('P1M'));
             $this->authorizationServer->enableGrantType(
                 $this->passwordGrant,
-                new \DateInterval('PT1H')
+                new \DateInterval('P1M')
             );
 
             $responseInterface = $this->authorizationServer->respondToAccessTokenRequest($request, $response);

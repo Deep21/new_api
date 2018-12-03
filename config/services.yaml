@@ -51,4 +51,4 @@ services:
     League\OAuth2\Server\ResourceServer:
         arguments:
             - '@App\Repository\Oauth\AccessTokenRepository'
-            - '%env(OAUTH2_PUBLIC_KEY)%'
+            - '%kernel.project_dir%%env(OAUTH2_PUBLIC_KEY)%'
