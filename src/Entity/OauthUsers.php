@@ -12,12 +12,6 @@ class OauthUsers
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
-
-    /**
      * @ORM\Column(type="string", length=80, nullable=true)
      */
     private $username;

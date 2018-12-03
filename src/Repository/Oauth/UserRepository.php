@@ -15,12 +15,24 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserRepository extends ServiceEntityRepository implements UserRepositoryInterface
 {
-    public function __construct(RegistryInterface $registry)
+    /**
+     * @var RegistryInterface
+     */
+    private $registry;
+    /**
+     * @var UserPasswordEncoderInterface
+     */
+    private $encoder;
+
+    public function __construct(RegistryInterface $registry, UserPasswordEncoderInterface $encoder)
     {
         parent::__construct($registry, OauthUsers::class);
+        $this->registry = $registry;
+        $this->encoder = $encoder;
     }
 
     /**
@@ -34,6 +46,8 @@ class UserRepository extends ServiceEntityRepository implements UserRepositoryIn
     ) {
 
         if ($username === 'alex' && $password === 'whisky') {
+            $oauthUser = $this->findOneBy(['password' => $password]);
+            dump($this->encoder);exit;
             return new UserEntity();
         }
 

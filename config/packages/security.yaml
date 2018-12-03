@@ -8,7 +8,7 @@ security:
                 property: email
     encoders:
         App\Entity\User:
-            algorithm: bcrypt
+            algorithm: argon2i
             cost: 12
 
     firewalls:
