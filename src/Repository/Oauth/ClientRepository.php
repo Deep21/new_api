@@ -10,10 +10,18 @@ namespace App\Repository\Oauth;
 
 
 use App\Entity\Oauth\ClientEntity;
+use App\Entity\OauthClients;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class ClientRepository implements ClientRepositoryInterface
+class ClientRepository extends ServiceEntityRepository implements ClientRepositoryInterface
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, OauthClients::class);
+    }
+
     /**
      * {@inheritdoc}
      */

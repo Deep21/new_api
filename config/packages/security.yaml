@@ -4,12 +4,17 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
-                class: App\Entity\User
+                class: App\Provider\UserProvider
                 property: email
     encoders:
-        App\Entity\User:
-            algorithm: bcrypt
-            cost: 12
+        App\Entity\OauthUsers:
+            algorithm: 'argon2i'
+            # maximum memory (in KiB) that may be used to compute the Argon2 hash
+            memory_cost: 1024
+            #  number of times the Argon2 hash algorithm will be run
+            time_cost: 2
+            # number of threads to use for computing the Argon2 hash
+            threads: 2
 
     firewalls:
 
