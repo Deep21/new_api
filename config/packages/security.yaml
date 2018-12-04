@@ -30,7 +30,7 @@ security:
             stateless: true
 
         login:
-            pattern:   ^/user(login|register)
+            pattern:   ^/login
             anonymous: true
             stateless: true
             # activate different ways to authenticate

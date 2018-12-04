@@ -178,7 +178,6 @@ class OauthUser implements UserInterface
      */
     public function getSalt()
     {
-        // TODO: Implement getSalt() method.
     }
 
     /**

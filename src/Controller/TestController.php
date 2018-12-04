@@ -56,7 +56,13 @@ class TestController extends AbstractController
         // convert a Response
         // $psrResponse is an instance of Psr\Http\Message\ResponseInterface
         return $httpFoundationFactory->createResponse($responseInterface);
+    }
 
+    /**
+     * @Route("login", name="login", methods={"GET"})
+     */
+    public function loginAction()
+    {
 
     }
 }

@@ -44,14 +44,12 @@ class UserRepository extends ServiceEntityRepository implements UserRepositoryIn
         $grantType,
         ClientEntityInterface $clientEntity
     ) {
-            $oauthUser = $this->findOneBy(['username' => $username]);
-            if($oauthUser == null) {
-                return;
-            }
-            $passwordEncoded = $this->encoder->encodePassword($oauthUser, $password);
-            dump(__CLASS__);
-            return new User($oauthUser->getId());
-//            dump($e, $this->encoder->isPasswordValid($oauthUser, $password));
 
+        $oauthUser = $this->findOneBy(['username' => $username]);
+        if($oauthUser == null || !$this->encoder->isPasswordValid($oauthUser, $password)) {
+            return null;
+        }
+
+        return new User($oauthUser->getId());
     }
 }
