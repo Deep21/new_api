@@ -11,8 +11,22 @@ namespace App\Entity\Oauth;
 
 use League\OAuth2\Server\Entities\UserEntityInterface;
 
-class UserEntity implements UserEntityInterface
+class User implements UserEntityInterface
 {
+    /**
+     * @var int
+     */
+    private $id;
+
+    /**
+     * User constructor.
+     * @param int $id
+     */
+    public function __construct(int $id)
+    {
+        $this->id = $id;
+    }
+
     /**
      * Return the user's identifier.
      *
@@ -20,6 +34,6 @@ class UserEntity implements UserEntityInterface
      */
     public function getIdentifier()
     {
-        return 1;
+        return $this->id;
     }
 }

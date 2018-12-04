@@ -7,7 +7,7 @@ security:
                 class: App\Provider\UserProvider
                 property: email
     encoders:
-        App\Entity\OauthUsers:
+        App\Entity\Oauth\OauthUser:
             algorithm: 'argon2i'
             # maximum memory (in KiB) that may be used to compute the Argon2 hash
             memory_cost: 1024

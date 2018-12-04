@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Oauth;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -9,10 +9,27 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="oauth_user")
  * @ORM\Entity(repositoryClass="App\Repository\OauthUsersRepository")
  */
-class OauthUsers implements UserInterface
+class OauthUser implements UserInterface
 {
     /**
-     * @ORM\Id()
+     * User constructor.
+     *
+     * @param int $id
+     */
+    public function __construct(int $id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @var int
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
+     */
+    private $id;
+
+    /**
      * @ORM\Column(type="string", length=80, nullable=true)
      */
     private $username;
@@ -173,5 +190,13 @@ class OauthUsers implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 }

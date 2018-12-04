@@ -43,21 +43,20 @@ class TestController extends AbstractController
     public function getAccessToken(ServerRequestInterface $request): Response
     {
         $response =  new \Zend\Diactoros\Response();
-        try {
-            $this->passwordGrant->setRefreshTokenTTL(new \DateInterval('P1M'));
-            $this->authorizationServer->enableGrantType(
-                $this->passwordGrant,
-                new \DateInterval('P1M')
-            );
 
-            $responseInterface = $this->authorizationServer->respondToAccessTokenRequest($request, $response);
-            $httpFoundationFactory = new HttpFoundationFactory();
+        $this->passwordGrant->setRefreshTokenTTL(new \DateInterval('P1M'));
+        $this->authorizationServer->enableGrantType(
+            $this->passwordGrant,
+            new \DateInterval('P1M')
+        );
 
-            // convert a Response
-            // $psrResponse is an instance of Psr\Http\Message\ResponseInterface
-            return $httpFoundationFactory->createResponse($responseInterface);
-        } catch (\Exception $e) {
-            dump($e);
-        }
+        $responseInterface = $this->authorizationServer->respondToAccessTokenRequest($request, $response);
+        $httpFoundationFactory = new HttpFoundationFactory();
+
+        // convert a Response
+        // $psrResponse is an instance of Psr\Http\Message\ResponseInterface
+        return $httpFoundationFactory->createResponse($responseInterface);
+
+
     }
 }

@@ -20,7 +20,7 @@ class OauthUsersRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return OauthUsers[] Returns an array of OauthUsers objects
+//     * @return OauthUser[] Returns an array of OauthUser objects
 //     */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class OauthUsersRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?OauthUsers
+    public function findOneBySomeField($value): ?OauthUser
     {
         return $this->createQueryBuilder('o')
             ->andWhere('o.exampleField = :val')

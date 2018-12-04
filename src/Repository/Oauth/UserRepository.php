@@ -9,8 +9,8 @@
 
 namespace App\Repository\Oauth;
 
-use App\Entity\Oauth\UserEntity;
-use App\Entity\OauthUsers;
+use App\Entity\Oauth\OauthUser;
+use App\Entity\Oauth\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
@@ -30,7 +30,7 @@ class UserRepository extends ServiceEntityRepository implements UserRepositoryIn
 
     public function __construct(RegistryInterface $registry, UserPasswordEncoderInterface $encoder)
     {
-        parent::__construct($registry, OauthUsers::class);
+        parent::__construct($registry, OauthUser::class);
         $this->registry = $registry;
         $this->encoder = $encoder;
     }
@@ -44,15 +44,14 @@ class UserRepository extends ServiceEntityRepository implements UserRepositoryIn
         $grantType,
         ClientEntityInterface $clientEntity
     ) {
-
-        if ($username === 'alex' && $password === 'whisky') {
             $oauthUser = $this->findOneBy(['username' => $username]);
-            $e = $this->encoder->encodePassword($oauthUser, $password);
-            dump($e, $this->encoder->isPasswordValid($oauthUser, $password));
-            exit;
-            return new UserEntity();
-        }
+            if($oauthUser == null) {
+                return;
+            }
+            $passwordEncoded = $this->encoder->encodePassword($oauthUser, $password);
+            dump(__CLASS__);
+            return new User($oauthUser->getId());
+//            dump($e, $this->encoder->isPasswordValid($oauthUser, $password));
 
-        return;
     }
 }
