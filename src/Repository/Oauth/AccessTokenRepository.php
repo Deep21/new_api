@@ -10,6 +10,7 @@
 namespace App\Repository\Oauth;
 
 use App\Entity\Oauth\AccessTokenEntity;
+use Doctrine\ORM\EntityManagerInterface;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
@@ -17,11 +18,31 @@ use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
     /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    /**
+     * AccessTokenRepository constructor.
+     * @param EntityManagerInterface $entityManager
+     */
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity)
     {
         // Some logic here to save the access token to a database
+        $accessToken = new AccessTokenEntity();
+        $uid = $accessTokenEntity->getUserIdentifier();
+        $id = $accessTokenEntity->getIdentifier();
+        $client = $accessTokenEntity->getClient();
+        dd($uid, $id, $client);
+        $this->entityManager->persist($accessToken);
     }
 
     /**
