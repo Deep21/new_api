@@ -19,7 +19,6 @@ class ClientEntity implements ClientEntityInterface
 
     private $name;
 
-
     /**
      * Returns the registered redirect URI (as a string).
      *
