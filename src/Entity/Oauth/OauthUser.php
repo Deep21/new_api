@@ -23,8 +23,9 @@ class OauthUser implements UserInterface
 
     /**
      * @var int
+     *
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
      */
     private $id;

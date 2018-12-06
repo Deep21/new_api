@@ -36,13 +36,26 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
      */
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity)
     {
-        // Some logic here to save the access token to a database
+        $em = $this->entityManager;
         $accessToken = new AccessTokenEntity();
         $uid = $accessTokenEntity->getUserIdentifier();
-        $id = $accessTokenEntity->getIdentifier();
+        $accessTokenID = $accessTokenEntity->getIdentifier();
+        $expireAt = $accessTokenEntity->getExpiryDateTime();
+        $scopes = $accessTokenEntity->getScopes();
+        $accessToken->setScope(json_encode($this->scopesToArray($scopes)));
         $client = $accessTokenEntity->getClient();
-        dd($uid, $id, $client);
-        $this->entityManager->persist($accessToken);
+        $accessToken->setExpireAt($expireAt);
+        $accessToken->setAccessToken($accessTokenID);
+
+        $em->persist($accessToken);
+        $em->flush();
+    }
+
+    private function scopesToArray(array $scopes): array
+    {
+        return array_map(function ($scope) {
+            return $scope->getIdentifier();
+        }, $scopes);
     }
 
     /**
@@ -68,8 +81,9 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     {
         $accessToken = new AccessTokenEntity();
         $accessToken->setClient($clientEntity);
+//        dump($scopes);
         foreach ($scopes as $scope) {
-            $accessToken->addScope($scope);
+            //$accessToken->addScope($scope);
         }
         $accessToken->setUserIdentifier($userIdentifier);
 

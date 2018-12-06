@@ -23,7 +23,7 @@ class ScopeEntity implements ScopeEntityInterface
      */
     public function getIdentifier()
     {
-        // TODO: Implement getIdentifier() method.
+        return $this->identifier;
     }
 
     /**
@@ -35,6 +35,5 @@ class ScopeEntity implements ScopeEntityInterface
      */
     public function jsonSerialize()
     {
-        // TODO: Implement jsonSerialize() method.
     }
 }
