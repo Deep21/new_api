@@ -2,15 +2,19 @@
 
 namespace App\Controller;
 
+use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations\View as ViewAnnotation;
+use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\View\View;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\PasswordGrant;
+use League\OAuth2\Server\ResourceServer;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class TestController extends AbstractController
+class TestController extends FOSRestController
 {
     /**
      * @var AuthorizationServer
@@ -59,10 +63,21 @@ class TestController extends AbstractController
     }
 
     /**
-     * @Route("login", name="login", methods={"GET"})
+     * @Annotations\Get(
+     *     path="/protected",
+     *     name = "protected_resource"
+     * )
+     * @ViewAnnotation(statusCode=Response::HTTP_OK)
+     * @param ServerRequestInterface $request
+     * @param ResourceServer $resourceServer
+     * @throws \League\OAuth2\Server\Exception\OAuthServerException
+     *
+     * @return View
      */
-    public function loginAction()
+    public function loginAction(ServerRequestInterface $request, ResourceServer $resourceServer) : View
     {
+        $resourceServer->validateAuthenticatedRequest($request);
+        return $this->view([]);
 
     }
 }

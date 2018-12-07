@@ -44,8 +44,10 @@ class CartProductRepository extends ServiceEntityRepository
             $cartProduct->setQuantity($cartProductModel->getQuantity());
             $cartProduct->setProduct($product);
             $cartProduct->setProductAttribute($productAttribute);
+
             $em->persist($cartProduct);
             $em->flush();
+
         } catch (OptimisticLockException $e) {
         } catch (ORMException $e) {
         }

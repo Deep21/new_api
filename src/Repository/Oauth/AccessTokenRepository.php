@@ -21,14 +21,20 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
      * @var EntityManagerInterface
      */
     private $entityManager;
+    /**
+     * @var \App\Repository\Doctrine\AccessTokenRepository
+     */
+    private $repository;
 
     /**
      * AccessTokenRepository constructor.
      * @param EntityManagerInterface $entityManager
+     * @param \App\Repository\Doctrine\AccessTokenRepository $repository
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, \App\Repository\Doctrine\AccessTokenRepository $repository)
     {
         $this->entityManager = $entityManager;
+        $this->repository = $repository;
     }
 
     /**
@@ -61,17 +67,19 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function revokeAccessToken($tokenId)
+    public function revokeAccessToken($tokenId) : void
     {
         // Some logic here to revoke the access token
+        $this->repository->revokeAccessToken($tokenId);
+
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isAccessTokenRevoked($tokenId)
+    public function isAccessTokenRevoked($tokenId) : bool
     {
-        return false; // Access token hasn't been revoked
+        return $this->repository->isTokenExist($tokenId);
     }
 
     /**
