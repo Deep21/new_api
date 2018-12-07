@@ -9,13 +9,17 @@
 namespace App\Provider;
 
 
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
+    /**
+     * UserProvider constructor.
+     */
+    public function __construct()
+    {
+    }
 
     /**
      * Loads the user for the given username.
@@ -25,12 +29,13 @@ class UserProvider implements UserProviderInterface
      *
      * @param string $username The username
      *
-     * @return UserInterface
+     * @return void
      *
-     * @throws UsernameNotFoundException if the user is not found
      */
     public function loadUserByUsername($username)
     {
+        dump($username);
+        exit;
         // TODO: Implement loadUserByUsername() method.
     }
 
@@ -42,13 +47,13 @@ class UserProvider implements UserProviderInterface
      * object can just be merged into some internal array of users / identity
      * map.
      *
-     * @return UserInterface
+     * @param UserInterface $user
+     * @return void
      *
-     * @throws UnsupportedUserException  if the user is not supported
-     * @throws UsernameNotFoundException if the user is not found
      */
     public function refreshUser(UserInterface $user)
     {
+        dd("refreshUser");
         // TODO: Implement refreshUser() method.
     }
 
@@ -57,10 +62,11 @@ class UserProvider implements UserProviderInterface
      *
      * @param string $class
      *
-     * @return bool
+     * @return void
      */
     public function supportsClass($class)
     {
+        dd("supportsClass");
         // TODO: Implement supportsClass() method.
     }
 }

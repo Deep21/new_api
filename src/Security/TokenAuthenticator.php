@@ -134,8 +134,9 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
+        dd(get_class($userProvider));
         $apiToken = $credentials['access_token'];
-
+        $userProvider->loadUserByUsername('deep');
         if (null === $apiToken) {
             return null;
         }

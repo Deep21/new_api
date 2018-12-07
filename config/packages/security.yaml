@@ -2,10 +2,9 @@ security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
-            entity:
-                class: App\Provider\UserProvider
-                property: email
+        db_user_provider:
+            id: App\Provider\UserProvider
+
     encoders:
         App\Entity\Oauth\OauthUser:
             algorithm: 'argon2i'
