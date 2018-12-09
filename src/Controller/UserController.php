@@ -66,8 +66,6 @@ class UserController extends AbstractController
         } catch (\Exception $e) {
             dump($e);
         }
-
-
     }
 
     /**

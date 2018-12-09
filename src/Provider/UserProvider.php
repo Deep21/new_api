@@ -9,16 +9,24 @@
 namespace App\Provider;
 
 
+use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
     /**
-     * UserProvider constructor.
+     * @var UserRepository
      */
-    public function __construct()
+    private $userRepository;
+
+    /**
+     * UserProvider constructor.
+     * @param UserRepository $userRepository
+     */
+    public function __construct(UserRepository $userRepository)
     {
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -34,11 +42,18 @@ class UserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($username)
     {
-        dump($username);
-        exit;
         // TODO: Implement loadUserByUsername() method.
     }
 
+    /**
+     * @param int $id
+     * @return \App\Entity\User|null
+     */
+    public function loadUserById(int $id)
+    {
+        $user = $this->userRepository->findOneBy(['id' => $id]);
+        return $user;
+    }
     /**
      * Refreshes the user.
      *

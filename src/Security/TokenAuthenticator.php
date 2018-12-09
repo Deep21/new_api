@@ -8,12 +8,13 @@
 
 namespace App\Security;
 
-use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Provider\UserProvider;
+use League\OAuth2\Server\Exception\OAuthServerException;
+use League\OAuth2\Server\ResourceServer;
+use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -23,24 +24,17 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 class TokenAuthenticator extends AbstractGuardAuthenticator
 {
     /**
-     * @var EntityManagerInterface
+     * @var ResourceServer
      */
-    private $em;
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    private $resourceServer;
 
     /**
      * TokenAuthenticator constructor.
-     *
-     * @param EntityManagerInterface $em
-     * @param RouterInterface        $router
+     * @param ResourceServer $resourceServer
      */
-    public function __construct(EntityManagerInterface $em, RouterInterface $router)
+    public function __construct(ResourceServer $resourceServer)
     {
-        $this->em = $em;
-        $this->router = $router;
+        $this->resourceServer = $resourceServer;
     }
 
     /**
@@ -54,7 +48,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function supports(Request $request)
     {
-        return $request->headers->has('X-AUTH-TOKEN');
+        return $request->headers->has('authorization');
     }
 
     /**
@@ -64,12 +58,14 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      * @param Request $request
      *
      * @return array
+     * @throws OAuthServerException
      */
     public function getCredentials(Request $request)
     {
-        return [
-            'access_token' => $request->headers->get('X-AUTH-TOKEN'),
-        ];
+        $psrRequest = (new DiactorosFactory)->createRequest($request);
+        $psrRequest = $this->resourceServer->validateAuthenticatedRequest($psrRequest);
+
+        return ['user_id' => (int)$psrRequest->getAttribute('oauth_user_id')];
     }
 
     public function checkCredentials($credentials, UserInterface $user)
@@ -90,8 +86,6 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     {
         $data = [
             'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
-            // or to translate this message
-            // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
             ];
 
         return new JsonResponse($data, Response::HTTP_FORBIDDEN);
@@ -134,14 +128,16 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        dd(get_class($userProvider));
-        $apiToken = $credentials['access_token'];
-        $userProvider->loadUserByUsername('deep');
-        if (null === $apiToken) {
+        if (!is_array($credentials)
+            || empty($credentials)) {
+
             return null;
         }
 
-        // if a User object, checkCredentials() is called
-        return $this->em->getRepository(User::class)->findOneBy(['email' => 'deeptha@gmail.com']);
+        if($userProvider instanceof UserProvider) {
+            return $userProvider->loadUserById($credentials['user_id']);
+        }
+
+        return null;
     }
 }

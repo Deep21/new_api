@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Repository\Oauth\RefreshTokenRepository;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\Controller\Annotations\View as ViewAnnotation;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\PasswordGrant;
+use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\ResourceServer;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -39,22 +41,30 @@ class TestController extends FOSRestController
     }
 
     /**
-     * @Route("access-token", name="api_get_access_token", methods={"POST"})
+     * @Route("oauth/access-token", name="api_get_access_token", methods={"POST"})
      * @param ServerRequestInterface $request
+     * @param RefreshTokenRepository $refreshTokenRepository
      * @return Response
      * @throws \Exception
+     * @throws \League\OAuth2\Server\Exception\OAuthServerException
      */
-    public function getAccessToken(ServerRequestInterface $request): Response
+    public function getAccessToken(ServerRequestInterface $request, RefreshTokenRepository $refreshTokenRepository): Response
     {
-        $response =  new \Zend\Diactoros\Response();
+        // Enable the refresh token grant on the server
+        $grant = new RefreshTokenGrant($refreshTokenRepository);
+        $grant->setRefreshTokenTTL(new \DateInterval('P1M')); // The refresh token will expire in 1 month
+        $this->authorizationServer->enableGrantType(
+            $grant,
+            new \DateInterval('PT3600S') // The new access token will expire after 1 hour
+        );
 
         $this->passwordGrant->setRefreshTokenTTL(new \DateInterval('P1M'));
         $this->authorizationServer->enableGrantType(
             $this->passwordGrant,
-            new \DateInterval('P1M')
+            new \DateInterval('PT3600S')
         );
 
-        $responseInterface = $this->authorizationServer->respondToAccessTokenRequest($request, $response);
+        $responseInterface = $this->authorizationServer->respondToAccessTokenRequest($request, new \Zend\Diactoros\Response());
         $httpFoundationFactory = new HttpFoundationFactory();
 
         // convert a Response

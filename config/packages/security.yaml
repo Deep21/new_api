@@ -16,11 +16,12 @@ security:
             threads: 2
 
     firewalls:
-
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-
+        public:
+            pattern: ^/oauth/access-token
+            security: false
         main:
             pattern: ^/
             guard:
@@ -28,10 +29,7 @@ security:
                     - App\Security\TokenAuthenticator
             stateless: true
 
-        login:
-            pattern:   ^/login
-            anonymous: true
-            stateless: true
+
             # activate different ways to authenticate
 
             # http_basic: true
