@@ -23,7 +23,6 @@ class ExceptionListener implements EventSubscriberInterface
      */
     public function __construct()
     {
-
     }
 
     /**
@@ -43,12 +42,10 @@ class ExceptionListener implements EventSubscriberInterface
     public function processException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
-        if($exception instanceof OAuthServerException) {
+        if ($exception instanceof OAuthServerException) {
             $jsonResponse = new JsonResponse($exception->getPayload(), $exception->getHttpStatusCode());
             $httpFoundationFactory = new HttpFoundationFactory();
             $event->setResponse($httpFoundationFactory->createResponse($jsonResponse));
         }
-
     }
-
 }

@@ -88,6 +88,5 @@ class TestController extends FOSRestController
     {
         $resourceServer->validateAuthenticatedRequest($request);
         return $this->view([]);
-
     }
 }

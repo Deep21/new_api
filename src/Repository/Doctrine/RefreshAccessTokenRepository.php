@@ -8,9 +8,7 @@
 
 namespace App\Repository\Doctrine;
 
-
 use App\Entity\Bridge\RefreshTokenEntity;
-use App\Entity\Oauth\AccessTokenEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -28,7 +26,7 @@ class RefreshAccessTokenRepository extends ServiceEntityRepository
 
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, AccessTokenEntity::class);
+        parent::__construct($registry, RefreshTokenEntity::class);
     }
 
     /**
@@ -37,13 +35,12 @@ class RefreshAccessTokenRepository extends ServiceEntityRepository
      */
     public function isTokenExist(string $tokenId)
     {
-        $token =  $this->findOneBy(['accessToken' => $tokenId, 'isRevoked' => self::REVOKED ]);
-
-        if($token == null) {
+        $token = $this->findOneBy(['refresh_token' => $tokenId]);
+        if ($token == null) {
             return false;
         }
 
-        return true;
+        return $token->isRevoked();
     }
 
     /**
@@ -81,7 +78,6 @@ class RefreshAccessTokenRepository extends ServiceEntityRepository
         $client = $accessTokenEntity->getClient();
         $accessToken->setExpireAt($expireAt);
         $accessToken->setAccessToken($accessTokenID);
-
     }
 
     private function scopesToArray(array $scopes): array
@@ -90,5 +86,4 @@ class RefreshAccessTokenRepository extends ServiceEntityRepository
             return $scope->getIdentifier();
         }, $scopes);
     }
-
 }

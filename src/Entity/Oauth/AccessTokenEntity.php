@@ -162,5 +162,4 @@ class AccessTokenEntity implements AccessTokenEntityInterface
 
         return $this;
     }
-
 }

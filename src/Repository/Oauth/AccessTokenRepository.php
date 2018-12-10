@@ -71,7 +71,6 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     {
         // Some logic here to revoke the access token
         $this->repository->revokeAccessToken($tokenId);
-
     }
 
     /**

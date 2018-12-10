@@ -8,7 +8,6 @@
 
 namespace App\Provider;
 
-
 use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
