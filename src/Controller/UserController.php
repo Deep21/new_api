@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\Controller\Annotations\View as ViewAnnotation;
 use FOS\RestBundle\View\View;
@@ -61,8 +60,6 @@ class UserController extends AbstractController
                 new \DateInterval('PT1H')
             );
             $token = $this->authorizationServer->respondToAccessTokenRequest($request, $response);
-
-
         } catch (\Exception $e) {
             dump($e);
         }

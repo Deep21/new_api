@@ -13,7 +13,6 @@ use App\Entity\Oauth\ScopeEntity;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 
-
 class ScopeRepository implements ScopeRepositoryInterface
 {
     /**
@@ -49,12 +48,12 @@ class ScopeRepository implements ScopeRepositoryInterface
         ClientEntityInterface $clientEntity,
         $userIdentifier = null
     ) {
-/*        // Example of programatically modifying the final scope of the access token
-        if ((int) $userIdentifier === 1) {
-            $scope = new ScopeEntity();
-            $scope->setIdentifier('email');
-            $scopes[] = $scope;
-        }*/
+        /*        // Example of programatically modifying the final scope of the access token
+                if ((int) $userIdentifier === 1) {
+                    $scope = new ScopeEntity();
+                    $scope->setIdentifier('email');
+                    $scopes[] = $scope;
+                }*/
 
         return $scopes;
     }

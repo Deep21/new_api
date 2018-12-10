@@ -8,11 +8,9 @@
 
 namespace App\Repository\Doctrine;
 
-
 use App\Entity\Bridge\RefreshTokenEntity;
-use App\Entity\Oauth\AccessTokenEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
+use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -28,7 +26,7 @@ class RefreshAccessTokenRepository extends ServiceEntityRepository
 
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, AccessTokenEntity::class);
+        parent::__construct($registry, RefreshTokenEntity::class);
     }
 
     /**
@@ -37,13 +35,12 @@ class RefreshAccessTokenRepository extends ServiceEntityRepository
      */
     public function isTokenExist(string $tokenId)
     {
-        $token =  $this->findOneBy(['accessToken' => $tokenId, 'isRevoked' => self::REVOKED ]);
-
-        if($token == null) {
+        $token = $this->findOneBy(['refresh_token' => $tokenId]);
+        if ($token === null) {
             return false;
         }
 
-        return true;
+        return $token->isRevoked();
     }
 
     /**
@@ -67,28 +64,13 @@ class RefreshAccessTokenRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AccessTokenEntityInterface $accessTokenEntity
+     * @param RefreshTokenEntityInterface $refreshTokenEntity
      */
-    public function saveToken(AccessTokenEntityInterface $accessTokenEntity)
+    public function saveToken(RefreshTokenEntityInterface $refreshTokenEntity)
     {
-        $accessToken = new AccessTokenEntity();
-
-        $uid = $accessTokenEntity->getUserIdentifier();
-        $accessTokenID = $accessTokenEntity->getIdentifier();
-        $expireAt = $accessTokenEntity->getExpiryDateTime();
-        $scopes = $accessTokenEntity->getScopes();
-        $accessToken->setScope(json_encode($this->scopesToArray($scopes)));
-        $client = $accessTokenEntity->getClient();
-        $accessToken->setExpireAt($expireAt);
-        $accessToken->setAccessToken($accessTokenID);
-
-    }
-
-    private function scopesToArray(array $scopes): array
-    {
-        return array_map(function ($scope) {
-            return $scope->getIdentifier();
-        }, $scopes);
+        $refreshToken = new RefreshTokenEntity($refreshTokenEntity->getIdentifier(), $refreshTokenEntity->getExpiryDateTime());
+        $this->_em->persist($refreshToken);
+        $this->_em->flush();
     }
 
 }

@@ -130,11 +130,10 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     {
         if (!is_array($credentials)
             || empty($credentials)) {
-
             return null;
         }
 
-        if($userProvider instanceof UserProvider) {
+        if ($userProvider instanceof UserProvider) {
             return $userProvider->loadUserById($credentials['user_id']);
         }
 

@@ -83,7 +83,7 @@ class AccessTokenEntity implements AccessTokenEntityInterface
     {
         $this->updatedAt = new \DateTime();
         $this->createdAt = new \DateTime();
-        $this->isRevoked = false;
+        $this->isRevoked = 0;
     }
 
     public function getId(): ?int
@@ -162,5 +162,4 @@ class AccessTokenEntity implements AccessTokenEntityInterface
 
         return $this;
     }
-
 }

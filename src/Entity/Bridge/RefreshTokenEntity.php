@@ -11,10 +11,9 @@ namespace App\Entity\Bridge;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * AccessTokenEntity.
+ * RefreshTokenEntity.
  *
  * @ORM\Table(name="oauth_refresh_token")
- *
  * @ORM\Entity(repositoryClass="App\Repository\Doctrine\RefreshAccessTokenRepository")
  */
 class RefreshTokenEntity
@@ -31,9 +30,9 @@ class RefreshTokenEntity
     /**
      * @var string
      *
-     * @ORM\Column(name="refresh_token_id", type="string", length=255, nullable=false)
+     * @ORM\Column(name="refresh_token", type="string", length=255, nullable=false)
      */
-    private $accessToken;
+    private $refresh_token;
 
     /**
      * @var boolean
@@ -44,6 +43,7 @@ class RefreshTokenEntity
 
     /**
      * @var \DateTimeInterface
+     *
      * @ORM\Column(name="expire_at", type="datetime", nullable=false)
      */
     private $expiresAt;
@@ -64,12 +64,13 @@ class RefreshTokenEntity
 
     /**
      * RefreshToken constructor.
+     *
      * @param string $accessTokenId
      * @param \DateTimeInterface $expiresAt
      */
     public function __construct(string $accessTokenId, \DateTimeInterface $expiresAt)
     {
-        $this->accessToken = $accessTokenId;
+        $this->refresh_token = $accessTokenId;
         $this->expiresAt = $expiresAt;
         $this->setCreatedAt(new \DateTime());
         $this->setUpdatedAt(new \DateTime());
@@ -81,7 +82,7 @@ class RefreshTokenEntity
      */
     public function getAccessTokenId(): string
     {
-        return $this->accessToken;
+        return $this->refresh_token;
     }
 
     /**

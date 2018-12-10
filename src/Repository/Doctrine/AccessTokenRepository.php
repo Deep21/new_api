@@ -8,7 +8,6 @@
 
 namespace App\Repository\Doctrine;
 
-
 use App\Entity\Oauth\AccessTokenEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
@@ -38,7 +37,7 @@ class AccessTokenRepository extends ServiceEntityRepository
     {
         $token =  $this->findOneBy(['accessToken' => $tokenId, 'isRevoked' => self::REVOKED ]);
 
-        if($token == null) {
+        if ($token == null) {
             return false;
         }
 
@@ -81,7 +80,10 @@ class AccessTokenRepository extends ServiceEntityRepository
         $accessToken->setExpireAt($expireAt);
         $accessToken->setAccessToken($accessTokenID);
 
+        $this->_em->persist($accessToken);
+        $this->_em->flush();
     }
+
 
     private function scopesToArray(array $scopes): array
     {
@@ -89,5 +91,4 @@ class AccessTokenRepository extends ServiceEntityRepository
             return $scope->getIdentifier();
         }, $scopes);
     }
-
 }

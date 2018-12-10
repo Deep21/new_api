@@ -121,6 +121,4 @@ class OauthClients
 
         return $this;
     }
-
-
 }

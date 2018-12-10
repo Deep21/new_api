@@ -47,7 +47,6 @@ class CartProductRepository extends ServiceEntityRepository
 
             $em->persist($cartProduct);
             $em->flush();
-
         } catch (OptimisticLockException $e) {
         } catch (ORMException $e) {
         }
