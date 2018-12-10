@@ -10,16 +10,24 @@
 namespace App\Repository\Oauth;
 
 use App\Entity\Oauth\RefreshTokenEntity;
+use Doctrine\ORM\EntityManagerInterface;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
     /**
-     * RefreshTokenRepository constructor.
+     * @var EntityManagerInterface
      */
-    public function __construct()
+    private $entityManager;
+
+    /**
+     * RefreshTokenRepository constructor.
+     * @param EntityManagerInterface $entityManager
+     */
+    public function __construct(EntityManagerInterface $entityManager)
     {
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -27,7 +35,12 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity)
     {
-        // Some logic to persist the refresh token in a database
+        dump($refreshTokenEntity);
+
+/*        $t = new \App\Entity\Bridge\RefreshTokenEntity($refreshTokenEntity->getIdentifier(), $refreshTokenEntity->getExpiryDateTime());
+        $this->entityManager->persist($t);
+        $this->entityManager->flush();*/
+
     }
 
     /**
@@ -35,6 +48,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     public function revokeRefreshToken($tokenId)
     {
+        dump($tokenId);
 
         // Some logic to revoke the refresh token in a database
     }
@@ -44,7 +58,8 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     public function isRefreshTokenRevoked($tokenId)
     {
-
+        $isRevoked = $this->entityManager->getRepository(\App\Entity\Bridge\RefreshTokenEntity::class)->findOneBy(['accessToken' => $tokenId]);
+        dd($isRevoked);
         return false; // The refresh token has not been revoked
     }
 

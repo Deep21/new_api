@@ -12,7 +12,7 @@ use App\Entity\Oauth\ClientEntity;
 use Doctrine\ORM\EntityManagerInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 
-class ClientRepository  implements ClientRepositoryInterface
+class ClientRepository implements ClientRepositoryInterface
 {
     /**
      * @var EntityManagerInterface
