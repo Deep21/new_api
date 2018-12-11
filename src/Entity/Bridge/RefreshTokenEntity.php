@@ -30,9 +30,14 @@ class RefreshTokenEntity
     /**
      * @var string
      *
-     * @ORM\Column(name="refresh_token", type="string", length=255, nullable=false)
+     * @ORM\Column(name="refresh_token", type="string", length=255, nullable=false, unique=true)
      */
     private $refresh_token;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=OA::class, cascade={"persist", "remove"}, inversedBy="client")
+     */
+    private $client;
 
     /**
      * @var boolean
