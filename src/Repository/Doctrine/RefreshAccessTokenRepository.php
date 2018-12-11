@@ -10,7 +10,7 @@ namespace App\Repository\Doctrine;
 
 use App\Entity\Bridge\RefreshTokenEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
+use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -36,7 +36,7 @@ class RefreshAccessTokenRepository extends ServiceEntityRepository
     public function isTokenExist(string $tokenId)
     {
         $token = $this->findOneBy(['refresh_token' => $tokenId]);
-        if ($token == null) {
+        if ($token === null) {
             return false;
         }
 
@@ -64,26 +64,13 @@ class RefreshAccessTokenRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AccessTokenEntityInterface $accessTokenEntity
+     * @param RefreshTokenEntityInterface $refreshTokenEntity
      */
-    public function saveToken(AccessTokenEntityInterface $accessTokenEntity)
+    public function saveToken(RefreshTokenEntityInterface $refreshTokenEntity)
     {
-        $accessToken = new AccessTokenEntity();
-
-        $uid = $accessTokenEntity->getUserIdentifier();
-        $accessTokenID = $accessTokenEntity->getIdentifier();
-        $expireAt = $accessTokenEntity->getExpiryDateTime();
-        $scopes = $accessTokenEntity->getScopes();
-        $accessToken->setScope(json_encode($this->scopesToArray($scopes)));
-        $client = $accessTokenEntity->getClient();
-        $accessToken->setExpireAt($expireAt);
-        $accessToken->setAccessToken($accessTokenID);
+        $refreshToken = new RefreshTokenEntity($refreshTokenEntity->getIdentifier(), $refreshTokenEntity->getExpiryDateTime());
+        $this->_em->persist($refreshToken);
+        $this->_em->flush();
     }
 
-    private function scopesToArray(array $scopes): array
-    {
-        return array_map(function ($scope) {
-            return $scope->getIdentifier();
-        }, $scopes);
-    }
 }

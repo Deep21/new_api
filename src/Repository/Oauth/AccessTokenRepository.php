@@ -10,7 +10,6 @@
 namespace App\Repository\Oauth;
 
 use App\Entity\Oauth\AccessTokenEntity;
-use Doctrine\ORM\EntityManagerInterface;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
@@ -18,22 +17,17 @@ use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-    /**
      * @var \App\Repository\Doctrine\AccessTokenRepository
      */
     private $repository;
 
     /**
      * AccessTokenRepository constructor.
-     * @param EntityManagerInterface $entityManager
+     *
      * @param \App\Repository\Doctrine\AccessTokenRepository $repository
      */
-    public function __construct(EntityManagerInterface $entityManager, \App\Repository\Doctrine\AccessTokenRepository $repository)
+    public function __construct(\App\Repository\Doctrine\AccessTokenRepository $repository)
     {
-        $this->entityManager = $entityManager;
         $this->repository = $repository;
     }
 
@@ -42,26 +36,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
      */
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity)
     {
-        $em = $this->entityManager;
-        $accessToken = new AccessTokenEntity();
-        $uid = $accessTokenEntity->getUserIdentifier();
-        $accessTokenID = $accessTokenEntity->getIdentifier();
-        $expireAt = $accessTokenEntity->getExpiryDateTime();
-        $scopes = $accessTokenEntity->getScopes();
-        $accessToken->setScope(json_encode($this->scopesToArray($scopes)));
-        $client = $accessTokenEntity->getClient();
-        $accessToken->setExpireAt($expireAt);
-        $accessToken->setAccessToken($accessTokenID);
-
-        $em->persist($accessToken);
-        $em->flush();
-    }
-
-    private function scopesToArray(array $scopes): array
-    {
-        return array_map(function ($scope) {
-            return $scope->getIdentifier();
-        }, $scopes);
+        $this->repository->saveToken($accessTokenEntity);
     }
 
     /**

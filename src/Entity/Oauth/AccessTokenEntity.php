@@ -38,7 +38,7 @@ class AccessTokenEntity implements AccessTokenEntityInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="access_token", type="string", length=255, nullable=false)
+     * @ORM\Column(name="access_token", type="string", length=80, nullable=false)
      */
     private $accessToken;
 
@@ -83,7 +83,7 @@ class AccessTokenEntity implements AccessTokenEntityInterface
     {
         $this->updatedAt = new \DateTime();
         $this->createdAt = new \DateTime();
-        $this->isRevoked = false;
+        $this->isRevoked = 0;
     }
 
     public function getId(): ?int

@@ -18,33 +18,25 @@ use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-    /**
      * @var RefreshAccessTokenRepository
      */
     private $refreshAccessTokenRepository;
 
     /**
      * RefreshTokenRepository constructor.
-     * @param EntityManagerInterface $entityManager
      * @param RefreshAccessTokenRepository $refreshAccessTokenRepository
      */
-    public function __construct(EntityManagerInterface $entityManager, RefreshAccessTokenRepository $refreshAccessTokenRepository)
+    public function __construct(RefreshAccessTokenRepository $refreshAccessTokenRepository)
     {
-        $this->entityManager = $entityManager;
         $this->refreshAccessTokenRepository = $refreshAccessTokenRepository;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity)
+    public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity) : void
     {
-        $t = new \App\Entity\Bridge\RefreshTokenEntity($refreshTokenEntity->getIdentifier(), $refreshTokenEntity->getExpiryDateTime());
-        $this->entityManager->persist($t);
-        $this->entityManager->flush();
+        $this->refreshAccessTokenRepository->saveToken($refreshTokenEntity);
     }
 
     /**
@@ -52,8 +44,6 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     public function revokeRefreshToken($tokenId)
     {
-
-
         // Some logic to revoke the refresh token in a database
     }
 
@@ -68,7 +58,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getNewRefreshToken()
+    public function getNewRefreshToken() : RefreshTokenEntityInterface
     {
         return new RefreshTokenEntity();
     }

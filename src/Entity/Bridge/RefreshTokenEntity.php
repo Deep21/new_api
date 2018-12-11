@@ -9,6 +9,7 @@
 namespace App\Entity\Bridge;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * RefreshTokenEntity.
@@ -30,9 +31,15 @@ class RefreshTokenEntity
     /**
      * @var string
      *
-     * @ORM\Column(name="refresh_token", type="string", length=255, nullable=false)
+     * @ORM\Column(name="refresh_token", type="string", length=80, nullable=false, unique=true)
      */
     private $refresh_token;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=OAuthClient::class, cascade={"persist", "remove"})
+     * @JoinColumn(name="client_id", referencedColumnName="id")
+     */
+    private $client;
 
     /**
      * @var boolean
@@ -136,5 +143,48 @@ class RefreshTokenEntity
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getRefreshToken(): ?string
+    {
+        return $this->refresh_token;
+    }
+
+    public function setRefreshToken(string $refresh_token): self
+    {
+        $this->refresh_token = $refresh_token;
+
+        return $this;
+    }
+
+    public function getIsRevoked(): ?bool
+    {
+        return $this->isRevoked;
+    }
+
+    public function setIsRevoked(bool $isRevoked): self
+    {
+        $this->isRevoked = $isRevoked;
+
+        return $this;
+    }
+
+    public function setExpiresAt(\DateTimeInterface $expiresAt): self
+    {
+        $this->expiresAt = $expiresAt;
+
+        return $this;
+    }
+
+    public function getClient(): ?OAuthClient
+    {
+        return $this->client;
+    }
+
+    public function setClient(?OAuthClient $client): self
+    {
+        $this->client = $client;
+
+        return $this;
     }
 }

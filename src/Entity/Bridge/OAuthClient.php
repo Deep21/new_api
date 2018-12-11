@@ -1,26 +1,30 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: deeptha
+ * Date: 11/12/18
+ * Time: 17:17
+ */
 
-namespace App\Entity;
+namespace App\Entity\Bridge;
 
 use Doctrine\ORM\Mapping as ORM;
-
 /**
- * OauthClients
+ * OAuthClient.
  *
  * @ORM\Table(name="oauth_client")
- * @ORM\Entity(repositoryClass="App\Repository\Oauth\ClientRepository")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\Doctrine\OAuthClientRepository")
  */
-class OauthClients
+class OAuthClient
 {
     /**
-     * @var string
+     * @var int
      *
-     * @ORM\Column(name="client_id", type="string", length=80, nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $clientId;
+    private $id;
 
     /**
      * @var string|null
@@ -57,10 +61,6 @@ class OauthClients
      */
     private $userId;
 
-    public function getClientId(): ?string
-    {
-        return $this->clientId;
-    }
 
     public function getClientSecret(): ?string
     {
@@ -120,5 +120,10 @@ class OauthClients
         $this->userId = $userId;
 
         return $this;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 }

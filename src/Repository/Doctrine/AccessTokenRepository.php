@@ -79,7 +79,11 @@ class AccessTokenRepository extends ServiceEntityRepository
         $client = $accessTokenEntity->getClient();
         $accessToken->setExpireAt($expireAt);
         $accessToken->setAccessToken($accessTokenID);
+
+        $this->_em->persist($accessToken);
+        $this->_em->flush();
     }
+
 
     private function scopesToArray(array $scopes): array
     {
