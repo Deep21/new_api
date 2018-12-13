@@ -27,4 +27,13 @@ class OAuthClientRepository extends ServiceEntityRepository
     }
 
 
+    /**
+     * @param string $clients
+     * @param string $secret
+     * @return OAuthClient|null
+     */
+    public function getClients(string $clients, string $secret)
+    {
+        return $this->findOneBy(['id' => $clients, 'clientSecret' =>$secret]);
+    }
 }

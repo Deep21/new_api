@@ -21,8 +21,8 @@ class OAuthClient
      * @var int
      *
      * @ORM\Id
-     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="string", nullable=false, length=100, options={"unsigned"=true})
+     * @ORM\GeneratedValue()
      */
     private $id;
 
