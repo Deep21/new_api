@@ -10,6 +10,7 @@
 namespace App\Repository\Oauth;
 
 use App\Entity\Oauth\RefreshTokenEntity;
+use App\Repository\Doctrine\OAuthClientRepository;
 use App\Repository\Doctrine\RefreshAccessTokenRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
@@ -21,14 +22,20 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      * @var RefreshAccessTokenRepository
      */
     private $refreshAccessTokenRepository;
+    /**
+     * @var OAuthClientRepository
+     */
+    private $authClientRepository;
 
     /**
      * RefreshTokenRepository constructor.
      * @param RefreshAccessTokenRepository $refreshAccessTokenRepository
+     * @param OAuthClientRepository $authClientRepository
      */
-    public function __construct(RefreshAccessTokenRepository $refreshAccessTokenRepository)
+    public function __construct(RefreshAccessTokenRepository $refreshAccessTokenRepository, OAuthClientRepository $authClientRepository)
     {
         $this->refreshAccessTokenRepository = $refreshAccessTokenRepository;
+        $this->authClientRepository = $authClientRepository;
     }
 
     /**

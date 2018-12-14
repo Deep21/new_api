@@ -26,7 +26,6 @@ class OAuthClientRepository extends ServiceEntityRepository
         parent::__construct($registry, OAuthClient::class);
     }
 
-
     /**
      * @param string $clients
      * @param string $secret

@@ -9,29 +9,29 @@
 
 namespace App\Repository\Oauth;
 
-use App\Entity\Oauth\OauthUser;
 use App\Entity\Oauth\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Repository\Doctrine\OAuthUserRepository;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UserRepository extends ServiceEntityRepository implements UserRepositoryInterface
+class UserRepository implements UserRepositoryInterface
 {
-    /**
-     * @var RegistryInterface
-     */
-    private $registry;
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    private $encoder;
 
-    public function __construct(RegistryInterface $registry, UserPasswordEncoderInterface $encoder)
+    private $encoder;
+    /**
+     * @var OAuthUserRepository
+     */
+    private $authUserRepository;
+
+    /**
+     * UserRepository constructor.
+     * @param OAuthUserRepository $authUserRepository
+     * @param UserPasswordEncoderInterface $encoder
+     */
+    public function __construct(OAuthUserRepository $authUserRepository, UserPasswordEncoderInterface $encoder)
     {
-        parent::__construct($registry, OauthUser::class);
-        $this->registry = $registry;
+        $this->authUserRepository = $authUserRepository;
         $this->encoder = $encoder;
     }
 
@@ -44,7 +44,7 @@ class UserRepository extends ServiceEntityRepository implements UserRepositoryIn
         $grantType,
         ClientEntityInterface $clientEntity
     ) {
-        $oauthUser = $this->findOneBy(['username' => $username]);
+        $oauthUser = $this->authUserRepository->findOneBy(['username' => $username]);
         if ($oauthUser == null || !$this->encoder->isPasswordValid($oauthUser, $password)) {
             return null;
         }

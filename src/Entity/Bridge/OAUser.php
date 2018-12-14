@@ -1,15 +1,23 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: deeptha
+ * Date: 14/12/18
+ * Time: 16:09
+ */
 
-namespace App\Entity\Oauth;
+namespace App\Entity\Bridge;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
+ * OAuthUser.
+ *
  * @ORM\Table(name="oauth_user")
- * @ORM\Entity(repositoryClass="App\Repository\OauthUsersRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Doctrine\OAuthUserRepository")
  */
-class OauthUser implements UserInterface
+class OAUser implements UserInterface
 {
     /**
      * User constructor.
@@ -25,45 +33,64 @@ class OauthUser implements UserInterface
      * @var int
      *
      * @ORM\Id
+     * @ORM\Column(type="string", nullable=false, length=100, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=80, nullable=true)
+     * @var string|null
+     *
+     * @ORM\Column(name="username", type="string", length=40, nullable=true)
      */
     private $username;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @var string|null
+     *
+     * @ORM\Column(name="password", type="string", length=200, nullable=true)
      */
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=80)
+     * @var string|null
+     *
+     * @ORM\Column(name="firstname", type="string", length=40, nullable=true)
      */
-    private $firstName;
+    private $firstname;
 
     /**
-     * @ORM\Column(type="string", length=80)
+     * @var string|null
+     *
+     * @ORM\Column(name="lastname", type="string", length=40, nullable=true)
      */
-    private $lastName;
+    private $lastname;
 
     /**
-     * @ORM\Column(type="string", length=80, nullable=true)
+     * @var string|null
+     *
+     * @ORM\Column(name="email", type="string", length=40, nullable=true)
      */
     private $email;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @var string|null
+     *
+     * @ORM\Column(name="email_verified", type="boolean", nullable=true)
      */
     private $emailVerified;
 
     /**
-     * @ORM\Column(type="string", length=4000)
+     * @var string|null
+     *
+     * @ORM\Column(name="scope", type="string", nullable=true)
      */
     private $scope;
+
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
 
     public function getUsername(): ?string
     {
@@ -82,33 +109,33 @@ class OauthUser implements UserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(?string $password): self
     {
         $this->password = $password;
 
         return $this;
     }
 
-    public function getFirstName(): ?string
+    public function getFirstname(): ?string
     {
-        return $this->firstName;
+        return $this->firstname;
     }
 
-    public function setFirstName(string $firstName): self
+    public function setFirstname(?string $firstname): self
     {
-        $this->firstName = $firstName;
+        $this->firstname = $firstname;
 
         return $this;
     }
 
-    public function getLastName(): ?string
+    public function getLastname(): ?string
     {
-        return $this->lastName;
+        return $this->lastname;
     }
 
-    public function setLastName(string $lastName): self
+    public function setLastname(?string $lastname): self
     {
-        $this->lastName = $lastName;
+        $this->lastname = $lastname;
 
         return $this;
     }
@@ -142,7 +169,7 @@ class OauthUser implements UserInterface
         return $this->scope;
     }
 
-    public function setScope(string $scope): self
+    public function setScope(?string $scope): self
     {
         $this->scope = $scope;
 
@@ -179,6 +206,7 @@ class OauthUser implements UserInterface
      */
     public function getSalt()
     {
+        // TODO: Implement getSalt() method.
     }
 
     /**
@@ -190,13 +218,5 @@ class OauthUser implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 }

@@ -69,6 +69,10 @@ class RefreshAccessTokenRepository extends ServiceEntityRepository
     public function saveToken(RefreshTokenEntityInterface $refreshTokenEntity)
     {
         $refreshToken = new RefreshTokenEntity($refreshTokenEntity->getIdentifier(), $refreshTokenEntity->getExpiryDateTime());
+        $client = $this->_em->getReference('App:Bridge\OAuthClient', $refreshTokenEntity->getAccessToken()->getClient()->getIdentifier());
+        $user = $this->_em->getReference('App:Bridge\OAUser', $refreshTokenEntity->getAccessToken()->getUserIdentifier());
+        $refreshToken->setClient($client);
+        $refreshToken->setUser($user);
         $this->_em->persist($refreshToken);
         $this->_em->flush();
     }

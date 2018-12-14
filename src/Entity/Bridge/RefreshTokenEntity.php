@@ -8,6 +8,7 @@
 
 namespace App\Entity\Bridge;
 
+use App\Entity\Bridge\OAUser as User;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 
@@ -40,6 +41,12 @@ class RefreshTokenEntity
      * @JoinColumn(name="client_id", referencedColumnName="id")
      */
     private $client;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=OAUser::class, cascade={"persist", "remove"})
+     * @JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    private $user;
 
     /**
      * @var boolean
@@ -184,6 +191,18 @@ class RefreshTokenEntity
     public function setClient(?OAuthClient $client): self
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
