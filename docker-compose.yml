@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+    db:
+      image: mysql:5.7
+      container_name: mysql_server
+      env_file:
+      - .env
+      ports:
+        - "3306:3306"
+      environment:
+        - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+        - "MYSQL_USER=${MYSQL_USER}"
+        - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+        - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+    web:
+      image: nginx:latest
+      container_name: nginx_server
+      ports:
+        - "8080:80"
+      volumes:
+        - ./docker/html:/code
+        - ./docker/conf/site.conf:/etc/nginx/conf.d/site.conf
+      links:
+        - php_server
+    php_server:
+      container_name: applicatif
+      image: php:7-fpm
+      volumes:
+        - ./docker/html:/code
