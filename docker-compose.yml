@@ -19,12 +19,14 @@ services:
       ports:
         - "8080:80"
       volumes:
-        - ./docker/html:/code
-        - ./docker/conf/site.conf:/etc/nginx/conf.d/site.conf
+        - .:/api
+        - ./docker/nginx/site.conf:/etc/nginx/conf.d/site.conf
       links:
-        - php_server
+        - php_server:php
     php_server:
       container_name: applicatif
-      image: php:7-fpm
+      build: ./docker/php
       volumes:
-        - ./docker/html:/code
+        - .:/api
+      links:
+        - db:db
