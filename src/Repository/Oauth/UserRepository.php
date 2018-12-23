@@ -45,6 +45,7 @@ class UserRepository implements UserRepositoryInterface
         ClientEntityInterface $clientEntity
     ) {
         $oauthUser = $this->authUserRepository->findOneBy(['username' => $username]);
+
         if ($oauthUser == null || !$this->encoder->isPasswordValid($oauthUser, $password)) {
             return null;
         }
