@@ -8,7 +8,7 @@
 
 namespace App\Repository\Doctrine;
 
-use App\Entity\Oauth\AccessTokenEntity;
+use App\Entity\Bridge\AccessTokenEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -66,6 +66,8 @@ class AccessTokenRepository extends ServiceEntityRepository
 
     /**
      * @param AccessTokenEntityInterface $accessTokenEntity
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function saveToken(AccessTokenEntityInterface $accessTokenEntity)
     {

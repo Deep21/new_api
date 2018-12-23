@@ -6,7 +6,7 @@ security:
             id: App\Provider\UserProvider
 
     encoders:
-        App\Entity\Bridge\OAUser:
+        App\Entity\Bridge\User:
             algorithm: 'argon2i'
             # maximum memory (in KiB) that may be used to compute the Argon2 hash
             memory_cost: 1024

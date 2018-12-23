@@ -10,6 +10,8 @@
 namespace App\Repository\Oauth;
 
 use App\Entity\Oauth\AccessTokenEntity;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
@@ -36,7 +38,12 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
      */
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity)
     {
-        $this->repository->saveToken($accessTokenEntity);
+        try {
+            $this->repository->saveToken($accessTokenEntity);
+
+        } catch (OptimisticLockException $e) {
+        } catch (ORMException $e) {
+        }
     }
 
     /**
@@ -44,7 +51,6 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
      */
     public function revokeAccessToken($tokenId) : void
     {
-        // Some logic here to revoke the access token
         $this->repository->revokeAccessToken($tokenId);
     }
 

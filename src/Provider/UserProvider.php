@@ -8,22 +8,22 @@
 
 namespace App\Provider;
 
-use App\Repository\UserRepository;
+use App\Repository\Doctrine\OAuthUserRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
     /**
-     * @var UserRepository
+     * @var OAuthUserRepository
      */
     private $userRepository;
 
     /**
      * UserProvider constructor.
-     * @param UserRepository $userRepository
+     * @param OAuthUserRepository $userRepository
      */
-    public function __construct(UserRepository $userRepository)
+    public function __construct(OAuthUserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
     }
@@ -41,12 +41,11 @@ class UserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($username)
     {
-        // TODO: Implement loadUserByUsername() method.
     }
 
     /**
      * @param int $id
-     * @return \App\Entity\User|null
+     * @return \App\Entity\Bridge\User|null
      */
     public function loadUserById(int $id)
     {
@@ -67,7 +66,6 @@ class UserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user)
     {
-        dd("refreshUser");
         // TODO: Implement refreshUser() method.
     }
 
@@ -80,7 +78,6 @@ class UserProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
-        dd("supportsClass");
         // TODO: Implement supportsClass() method.
     }
 }

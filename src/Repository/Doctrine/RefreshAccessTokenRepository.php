@@ -8,7 +8,9 @@
 
 namespace App\Repository\Doctrine;
 
+use App\Entity\Bridge\OAuthClient;
 use App\Entity\Bridge\RefreshTokenEntity;
+use App\Entity\Bridge\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -65,12 +67,14 @@ class RefreshAccessTokenRepository extends ServiceEntityRepository
 
     /**
      * @param RefreshTokenEntityInterface $refreshTokenEntity
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function saveToken(RefreshTokenEntityInterface $refreshTokenEntity)
     {
         $refreshToken = new RefreshTokenEntity($refreshTokenEntity->getIdentifier(), $refreshTokenEntity->getExpiryDateTime());
-        $client = $this->_em->getReference('App:Bridge\OAuthClient', $refreshTokenEntity->getAccessToken()->getClient()->getIdentifier());
-        $user = $this->_em->getReference('App:Bridge\OAUser', $refreshTokenEntity->getAccessToken()->getUserIdentifier());
+        $client = $this->_em->getReference(OAuthClient::class, $refreshTokenEntity->getAccessToken()->getClient()->getIdentifier());
+        $user   = $this->_em->getReference(User::class, $refreshTokenEntity->getAccessToken()->getUserIdentifier());
         $refreshToken->setClient($client);
         $refreshToken->setUser($user);
         $this->_em->persist($refreshToken);

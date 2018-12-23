@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="oauth_user")
  * @ORM\Entity(repositoryClass="App\Repository\Doctrine\OAuthUserRepository")
  */
-class OAUser implements UserInterface
+class User implements UserInterface
 {
     /**
      * User constructor.
