@@ -2,8 +2,9 @@ version: '2'
 
 services:
     db:
+      restart: always
       image: mysql:5.7
-      container_name: mysql_server
+      container_name: mysql
       env_file:
       - .env
       ports:
@@ -14,8 +15,9 @@ services:
         - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
         - "MYSQL_DATABASE=${MYSQL_DATABASE}"
     web:
+      restart: always
       image: nginx:latest
-      container_name: nginx_server
+      container_name: web
       ports:
         - "8080:80"
       volumes:
@@ -24,7 +26,8 @@ services:
       links:
         - php_server:php
     php_server:
-      container_name: applicatif
+      restart: always
+      container_name: sf4
       build: ./docker/php
       volumes:
         - .:/api

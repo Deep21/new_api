@@ -15,12 +15,15 @@ RUN \
     docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
     && docker-php-ext-configure mysqli --with-mysqli=mysqlnd \
     && docker-php-ext-install pdo_mysql \
-    &&  curl -sS https://getcomposer.org/installer | \
-        php -- --install-dir=/usr/bin/ --filename=composer \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
+    && composer --version \
     && openssl genrsa -out private.key 2048 \
     && openssl rsa -in private.key -pubout > public.key \
-    && usermod -u 1000 www-data
+    && chmod 630 private.key public.key \
+    && usermod -u 1000 www-data \
     && composer install \
-    && composer update
+    && composer update \
+    && echo 'alias sf="php bin/console"' >> ~/.bashrc\
+    && sf doctrine:schema:update --dump-sql --force
 
 EXPOSE 80
