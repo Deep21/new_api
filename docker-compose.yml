@@ -1,35 +1,56 @@
 version: '2'
 
 services:
+
     db:
       restart: always
       image: mysql:5.7
-      container_name: mysql
-      env_file:
-      - .env
+      container_name: mysql_server
       ports:
-        - "3306:3306"
+        - "3307:3306"
       environment:
-        - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
-        - "MYSQL_USER=${MYSQL_USER}"
-        - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
-        - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+        - "MYSQL_ROOT_PASSWORD=0000"
+        - "MYSQL_USER=api"
+        - "MYSQL_PASSWORD=0000"
+        - "MYSQL_DATABASE=new_api"
+
     web:
       restart: always
+      working_dir: /api
       image: nginx:latest
-      container_name: web
+      container_name: web_server
       ports:
-        - "8080:80"
+        - "8000:80"
       volumes:
         - .:/api
-        - ./docker/nginx/site.conf:/etc/nginx/conf.d/site.conf
+        - ./docker/nginx/sf4.conf:/etc/nginx/conf.d/site.conf
       links:
         - php_server:php
+
+    redis:
+      image: redis:5.0.3
+      container_name: redis_server
+      ports:
+        - "6379:6379"
+
     php_server:
       restart: always
+      working_dir: /api
       container_name: sf4
       build: ./docker/php
       volumes:
         - .:/api
       links:
         - db:db
+        - redis:redis
+      environment:
+        REDIS_HOST: redis
+        SESSION_DRIVER: redis
+        CACHE_DRIVER: redis
+
+    rabbitmq:
+      container_name: rabbit
+      image: rabbitmq:3-management
+      hostname: rabbit-node-1
+      ports:
+        - "60005:15672"

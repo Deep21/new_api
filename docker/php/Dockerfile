@@ -1,29 +1,43 @@
-FROM php:7-3-fpm
+FROM php:7.3-fpm
 
 MAINTAINER Deeptha <deeptha.wickrema@hotmail.fr>
 
+ENV PHPREDIS_VERSION 4.2.0
+ENV RABBITMQ_VERSION 3.7.8
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
-ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN apt-get update \
-&& apt-get install -y \
-    vim
+&&  apt-get install -y \
+    vim \
+    git \
+    zip \
+    unzip
 
 WORKDIR /api
 
-RUN \
-    docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
+
+RUN docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
     && docker-php-ext-configure mysqli --with-mysqli=mysqlnd \
-    && docker-php-ext-install pdo_mysql \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
-    && composer --version \
-    && openssl genrsa -out private.key 2048 \
+    && docker-php-ext-install pdo pdo_mysql bcmath opcache \
+    && curl -sS https://getcomposer.org/installer | \
+        php -- --install-dir=/usr/bin/ --filename=composer \
+    && echo 'alias sf="php bin/console"' >> ~/.bashrc
+
+## APCu
+RUN  pecl install apcu && docker-php-ext-enable apcu
+
+RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz \
+    && tar xfz /tmp/redis.tar.gz \
+    && mkdir -p /usr/src/php/ext \
+    && rm -r /tmp/redis.tar.gz \
+    && mv phpredis-$PHPREDIS_VERSION /usr/src/php/ext/redis \
+    && docker-php-ext-install redis
+
+RUN openssl genrsa -out private.key 2048 \
     && openssl rsa -in private.key -pubout > public.key \
-    && chmod 630 private.key public.key \
-    && usermod -u 1000 www-data \
-    && composer install \
-    && composer update \
-    && echo 'alias sf="php bin/console"' >> ~/.bashrc\
-    && sf doctrine:schema:update --dump-sql --force
+    && chown -R www-data:www-data /api
+#
+#RUN composer install && composer update
 
 EXPOSE 80
