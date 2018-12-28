@@ -39,6 +39,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity)
     {
         try {
+
             $this->repository->saveToken($accessTokenEntity);
 
         } catch (OptimisticLockException $e) {

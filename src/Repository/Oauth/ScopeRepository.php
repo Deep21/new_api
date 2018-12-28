@@ -16,23 +16,29 @@ use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 class ScopeRepository implements ScopeRepositoryInterface
 {
     /**
+     * @var \App\Repository\Doctrine\ScopeRepository
+     */
+    private $scopeRepository;
+
+    /**
+     * ScopeRepository constructor.
+     * @param \App\Repository\Doctrine\ScopeRepository $scopeRepository
+     */
+    public function __construct(\App\Repository\Doctrine\ScopeRepository $scopeRepository)
+    {
+        $this->scopeRepository = $scopeRepository;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getScopeEntityByIdentifier($scopeIdentifier)
     {
-        $scopes = [
-            'basic' => [
-                'description' => 'Basic details about you',
-            ],
-            'email' => [
-                'description' => 'Your email address',
-            ],
-        ];
-
-        if (array_key_exists($scopeIdentifier, $scopes) === false) {
-            return;
+        $scope = $this->scopeRepository->getScopeByScopeIdentifier($scopeIdentifier);
+        dd($scope);
+        if($scope == null){
+            return null;
         }
-
         $scope = new ScopeEntity();
         $scope->setIdentifier($scopeIdentifier);
 

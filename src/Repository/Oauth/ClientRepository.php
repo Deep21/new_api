@@ -36,7 +36,6 @@ class ClientRepository implements ClientRepositoryInterface
     public function getClientEntity($clientIdentifier, $grantType = null, $clientSecret = null, $mustValidateSecret = true)
     {
         $client = $this->authClientRepository->getClients($clientIdentifier, $clientSecret);
-        // Check if client is registered
         if ($client === null) {
             return null;
         }

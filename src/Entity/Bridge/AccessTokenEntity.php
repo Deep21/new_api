@@ -15,7 +15,6 @@ use Doctrine\ORM\Mapping as ORM;
  * AccessTokenEntity.
  *
  * @ORM\Table(name="oauth_access_token")
- *
  * @ORM\Entity(repositoryClass="App\Repository\Oauth\AccessTokenRepository")
  */
 class AccessTokenEntity

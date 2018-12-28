@@ -41,31 +41,6 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Annotations\Post(
-     *     path="/token",
-     *     name = "get_access_token"
-     * )
-     * @ViewAnnotation(statusCode=Response::HTTP_OK)
-     *
-     * @param ServerRequestInterface $request
-     * @return Psr7Response
-     */
-    public function getAccessTokenAction(ServerRequestInterface $request): ?Psr7Response
-    {
-        $response =  new Psr7Response();
-        try {
-            $this->grant->setRefreshTokenTTL(new \DateInterval('P1M'));
-            $this->authorizationServer->enableGrantType(
-                $this->grant,
-                new \DateInterval('PT1H')
-            );
-            $token = $this->authorizationServer->respondToAccessTokenRequest($request, $response);
-        } catch (\Exception $e) {
-            dump($e);
-        }
-    }
-
-    /**
      * @Annotations\Get(
      *     path="/user/register",
      *     name = "user_register"

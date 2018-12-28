@@ -9,6 +9,7 @@
 namespace App\Entity\Bridge;
 
 use Doctrine\ORM\Mapping as ORM;
+
 /**
  * OAuthClient.
  *
