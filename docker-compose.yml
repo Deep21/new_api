@@ -43,14 +43,16 @@ services:
       links:
         - db:db
         - redis:redis
+        - rabbitmq:rabbitmq
       environment:
         REDIS_HOST: redis
         SESSION_DRIVER: redis
         CACHE_DRIVER: redis
 
     rabbitmq:
+      restart: always
       container_name: rabbit
       image: rabbitmq:3-management
       hostname: rabbit-node-1
       ports:
-        - "60005:15672"
+        - "15672:15672"

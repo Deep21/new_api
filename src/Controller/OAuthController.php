@@ -74,7 +74,7 @@ class OAuthController extends FOSRestController
 
     /**
      * @Annotations\Get(
-     *     path="/protected",
+     *     path="oauth/protected",
      *     name = "protected_resource"
      * )
      * @ViewAnnotation(statusCode=Response::HTTP_OK)

@@ -7,10 +7,8 @@ use FOS\RestBundle\Controller\Annotations\View as ViewAnnotation;
 use FOS\RestBundle\View\View;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\PasswordGrant;
-use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Zend\Diactoros\Response as Psr7Response;
 
 /**
  * Class UserController.
@@ -42,7 +40,7 @@ class UserController extends AbstractController
 
     /**
      * @Annotations\Get(
-     *     path="/user/register",
+     *     path="/register",
      *     name = "user_register"
      * )
      * @ViewAnnotation(statusCode=Response::HTTP_OK)
@@ -51,6 +49,6 @@ class UserController extends AbstractController
      */
     public function registerAction(): View
     {
-        die('f');
+
     }
 }

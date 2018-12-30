@@ -28,6 +28,7 @@ security:
                 authenticators:
                     - App\Security\TokenAuthenticator
             stateless: true
+            security: false
 
 
             # activate different ways to authenticate

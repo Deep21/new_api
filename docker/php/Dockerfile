@@ -1,4 +1,4 @@
-FROM php:7.3-fpm
+FROM php:7.2-fpm
 
 MAINTAINER Deeptha <deeptha.wickrema@hotmail.fr>
 
@@ -12,10 +12,15 @@ RUN apt-get update \
     vim \
     git \
     zip \
-    unzip
+    unzip \
+    librabbitmq-dev \
+    libssh-dev \
+    && docker-php-ext-install \
+     sockets \
+    && pecl install amqp \
+    && docker-php-ext-enable amqp
 
 WORKDIR /api
-
 
 RUN docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
     && docker-php-ext-configure mysqli --with-mysqli=mysqlnd \
