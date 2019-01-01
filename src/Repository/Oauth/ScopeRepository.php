@@ -9,6 +9,7 @@
 
 namespace App\Repository\Oauth;
 
+use App\Entity\Bridge\Scope;
 use App\Entity\Oauth\ScopeEntity;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
@@ -35,7 +36,7 @@ class ScopeRepository implements ScopeRepositoryInterface
     public function getScopeEntityByIdentifier($scopeIdentifier)
     {
         $scope = $this->scopeRepository->getScopeByScopeIdentifier($scopeIdentifier);
-        dd($scope);
+
         if($scope == null){
             return null;
         }

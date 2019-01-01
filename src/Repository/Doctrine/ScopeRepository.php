@@ -4,6 +4,7 @@ namespace App\Repository\Doctrine;
 
 use App\Entity\Bridge\Scope;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\ORMException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -25,7 +26,17 @@ class ScopeRepository extends ServiceEntityRepository
      */
     public function getScopeByScopeIdentifier(string $scopeIdentifier) : ?Scope
     {
-        return $this->findOneBy(['scope'=>[$scopeIdentifier]]);
+        return $this->findOneBy(['scope'=>'ROLE_USER']);
+    }
+
+    public function setScpoe(Scope $scope)
+    {
+        try {
+            $this->_em->persist($scope);
+            $this->_em->flush();
+
+        } catch (ORMException $e) {
+        }
     }
 
 }
