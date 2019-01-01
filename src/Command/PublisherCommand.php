@@ -30,10 +30,10 @@ class PublisherCommand extends Command
 
         $connection = new AMQPStreamConnection("rabbitmq", "5672", 'test', 'test');
         $channel = $connection->channel();
-        $channel->queue_declare('hello', false, false, false, false);
+        $channel->queue_declare('task_queue', false, true, false, false);
 
         for ($i=0; $i<20; $i++){
-            $message = new AMQPMessage("Hello");
+            $message = new AMQPMessage("Hello", array('delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT));
             $channel->basic_publish($message, '', 'hello');
         }
 

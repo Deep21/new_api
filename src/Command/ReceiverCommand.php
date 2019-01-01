@@ -30,16 +30,18 @@ class ReceiverCommand extends Command
         $connection = new AMQPStreamConnection('rabbitmq', 5672, 'guest', 'guest');
         $channel = $connection->channel();
 
-        $channel->queue_declare('hello', false, false, false, false);
+        $channel->queue_declare('task_queue', false, true, false, false);
 
         echo " [*] Waiting for messages. To exit press CTRL+C\n";
 
         $callback = function (AMQPMessage $msg) {
             dump(' [x] Received ', $msg->getBody());
-            sleep(random_int(1,7));
+            sleep(2);
+
+            $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
         };
 
-        $channel->basic_consume('hello', '', false, true, false, false, $callback);
+        $channel->basic_consume('task_queue', '', false, false, false, false, $callback);
 
 
         while (count($channel->callbacks)) {
