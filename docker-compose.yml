@@ -1,58 +1,54 @@
 version: '2'
-
 services:
-
-    db:
-      restart: always
-      image: mysql:5.7
-      container_name: mysql_server
-      ports:
-        - "3307:3306"
-      environment:
-        - "MYSQL_ROOT_PASSWORD=0000"
-        - "MYSQL_USER=api"
-        - "MYSQL_PASSWORD=0000"
-        - "MYSQL_DATABASE=new_api"
-
-    web:
-      restart: always
-      working_dir: /api
-      image: nginx:latest
-      container_name: web_server
-      ports:
-        - "8000:80"
-      volumes:
-        - .:/api
-        - ./docker/nginx/sf4.conf:/etc/nginx/conf.d/site.conf
-      links:
-        - php_server:php
-
-    redis:
-      image: redis:5.0.3
-      container_name: redis_server
-      ports:
-        - "6379:6379"
-
-    php_server:
-      restart: always
-      working_dir: /api
-      container_name: sf4
-      build: ./docker/php
-      volumes:
-        - .:/api
-      links:
-        - db:db
-        - redis:redis
-        - rabbitmq:rabbitmq
-      environment:
-        REDIS_HOST: redis
-        SESSION_DRIVER: redis
-        CACHE_DRIVER: redis
-
-    rabbitmq:
-      restart: always
-      container_name: rabbit
-      image: rabbitmq:3-management
-      hostname: rabbit-node-1
-      ports:
-        - "15672:15672"
+  db:
+    restart: always
+    image: mysql:5.7
+    container_name: mysql_server
+    ports:
+      - 3307:3306
+    environment:
+      - "MYSQL_ROOT_PASSWORD=0000"
+      - "MYSQL_USER=api"
+      - "MYSQL_PASSWORD=0000"
+      - "MYSQL_DATABASE=new_api"
+  web:
+    restart: always
+    working_dir: /app
+    image: sf/nginx
+    container_name: web_server
+    ports:
+      - 8888:80
+    volumes_from:
+      - app
+    volumes:
+      - ./docker/nginx/sf4.conf:/etc/nginx/conf.d/site.conf
+    links:
+      - php_fpm:php
+  redis:
+    restart: always
+    image: redis:5.0.3
+    container_name: redis_server
+    ports:
+      - 6379:6379
+  app:
+    image: app/api
+    container_name: sf_app
+    links:
+      - db:db
+      - redis:redis
+    volumes:
+      - .:/app
+    tty: true
+  php_fpm:
+    restart: always
+    container_name: php_fpm
+    working_dir: /app
+    build: ./docker/php
+    volumes_from:
+      - app
+  rabbitmq:
+    restart: always
+    image: rabbitmq:3-management
+    hostname: rabbit-node-1
+    ports:
+      - 60005:15672

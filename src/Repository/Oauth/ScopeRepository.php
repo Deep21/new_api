@@ -35,11 +35,19 @@ class ScopeRepository implements ScopeRepositoryInterface
      */
     public function getScopeEntityByIdentifier($scopeIdentifier)
     {
+     /*
+        $scope = new Scope();
+        $scope->setScope(["ROLES_USER","ROLES_USER"]);
+        $scope->setDescription("des");
+        $this->scopeRepository->setScpoe($scope);
+        exit;
+     */
         $scope = $this->scopeRepository->getScopeByScopeIdentifier($scopeIdentifier);
 
-        if($scope == null){
+        if($scope === null) {
             return null;
         }
+
         $scope = new ScopeEntity();
         $scope->setIdentifier($scopeIdentifier);
 
@@ -55,13 +63,8 @@ class ScopeRepository implements ScopeRepositoryInterface
         ClientEntityInterface $clientEntity,
         $userIdentifier = null
     ) {
-        /*        // Example of programatically modifying the final scope of the access token
-                if ((int) $userIdentifier === 1) {
-                    $scope = new ScopeEntity();
-                    $scope->setIdentifier('email');
-                    $scopes[] = $scope;
-                }*/
 
-        return $scopes;
+
+        return [];
     }
 }
